@@ -157,6 +157,7 @@ static void *log_apply_scheduler_routine(void *scheduler_index) {
         size_t total_log_len = 0;
         auto task = log_apply_scheduler_acquire(&total_log_len);
 
+        LogEvent(COMPONENT_FSAL, "log applier starting apply %zu bytes log", total_log_len);
         auto need_to_apply = total_log_len;
 
         // 把每一个task分配给相应的worker

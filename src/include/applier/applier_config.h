@@ -28,7 +28,7 @@ static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
                                     "sbtest10.ibd"
 };
 
-
+static constexpr uint32_t PER_LOG_FILE_SIZE = 48 * 1024 * 1204; // 48M
 // log block size in bytes
 static constexpr size_t LOG_BLOCK_SIZE = 512;
 
@@ -45,7 +45,6 @@ static constexpr uint32_t N_LOG_METADATA_BLOCKS = 4;
 static constexpr uint32_t N_LOG_METADATA_BLOCK_BYTES = N_LOG_METADATA_BLOCKS * LOG_BLOCK_SIZE;
 static constexpr lsn_t LOG_START_LSN = 8716;
 
-static constexpr uint32_t PER_LOG_FILE_SIZE = 48 * 1024 * 1204; // 48M
 
 static constexpr uint32_t N_BLOCKS_IN_A_PAGE = DATA_PAGE_SIZE / LOG_BLOCK_SIZE; // 48M
 

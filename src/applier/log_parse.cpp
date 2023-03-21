@@ -106,7 +106,7 @@ void* log_parse_thread_routine(void*) {
             total_len += len;
             PageAddress page_address(space_id, page_id);
             auto log_entry = LogEntry(type, space_id, page_id, log_parser.parsed_lsn, len, log_body_ptr, start_ptr + len);
-//            LogEvent(COMPONENT_FSAL, "log type=%s, space id=%d, page id=%d, lsn=%zu, len=%d", GetLogString(type), space_id, page_id, log_parser.parsed_lsn, len);
+//            LogEvent(COMPONENT_FSAL, "log parser parse log type=%s, space id=%d, page id=%d, lsn=%zu, len=%d", GetLogString(type), space_id, page_id, log_parser.parsed_lsn, len);
             // 将日志加入索引
             apply_index.InsertBack(std::move(log_entry));
             log_group.parsed_isn += len;
@@ -115,6 +115,7 @@ void* log_parse_thread_routine(void*) {
             start_ptr += len;
             log_parser.parsed_lsn = recv_calc_lsn_on_data_add(log_parser.parsed_lsn, len);
         }
+        LogEvent(COMPONENT_FSAL, "log parser parsed a batch log %zu bytes", total_len);
     }
 }
 
@@ -3084,7 +3085,7 @@ static byte* ParseSingleLogRecordBody(LOG_TYPE	type,
             break;
         default:
             ptr = nullptr;
-            std::cerr << "found unknown log type." << std::endl;
+            assert(false); // unknown log type
     }
 
     return(ptr);

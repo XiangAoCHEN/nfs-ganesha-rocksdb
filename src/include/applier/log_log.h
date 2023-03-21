@@ -70,7 +70,7 @@ struct log_parser_t {
 
     // 如果当前需要解析的一批log，在log buf中出现首尾相连的情况，
     // 为了保证parse buf是连续的，就必须把首尾两端log拷贝到parse_buf_back中
-    std::unique_ptr<unsigned char[]> parse_buf_back {std::unique_ptr<unsigned char[]>(new unsigned char [APPLY_BATCH_SIZE])};
+    std::unique_ptr<unsigned char[]> parse_buf_back {std::unique_ptr<unsigned char[]>(new unsigned char [PER_LOG_FILE_SIZE * LOG_FILE_NUMBER])};
 
     int log_dispatch_number_table[APPLIER_THREAD] {}; // 记录当前已经分配给每一个log applier的log数量
 
@@ -131,7 +131,7 @@ struct apply_task {
 
 class PthreadMutexGuard {
 public:
-    explicit PthreadMutexGuard(pthread_mutex_t &lock) : lock_(lock) {pthread_mutex_lock(&lock_);}
+    explicit PthreadMutexGuard(pthread_mutex_t &lock) : lock_(lock) { pthread_mutex_lock(&lock_); }
     ~PthreadMutexGuard() { pthread_mutex_unlock(&lock_);}
 private:
     pthread_mutex_t &lock_;

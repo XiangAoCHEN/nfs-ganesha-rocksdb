@@ -707,8 +707,9 @@ void mdcache_write2(struct fsal_obj_handle *obj_hdl,
 {
     int index = is_log_file_in_handle(obj_hdl);
     if (index >= 0) {
+        LogEvent(COMPONENT_FSAL, "log writer start write to ib_logfile%d, offset %ld", index, write_arg->offset);
         copy_log_to_buf(index, write_arg->offset, write_arg->iov, write_arg->iov_count);
-//        LogEvent(COMPONENT_FSAL, "write to ib_logfile%d, offset %ld, len %ld", index, write_arg->offset, len);
+        LogEvent(COMPONENT_FSAL, "log writer end write to ib_logfile%d, offset %ld", index, write_arg->offset);
     }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);

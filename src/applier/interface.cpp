@@ -200,7 +200,6 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
     }
     assert(total_len % LOG_BLOCK_SIZE == 0); // 每次log write必须是以LOG_BLOCK_SIZE为单位
 
-
     if (offset == 0 && (total_len > N_LOG_METADATA_BLOCK_BYTES)) {
         // 跳过 meta_block
         dest_buf = copy_buf + N_LOG_METADATA_BLOCK_BYTES;
@@ -230,6 +229,9 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
             i < blocks;
             ++i, buf += LOG_BLOCK_SIZE) {
         auto data_len = mach_read_from_2(buf + LOG_BLOCK_HDR_DATA_LEN);
+        if (data_len == 0) {
+            break;
+        }
         // FIXME 切换日志的时候，会写meta block，一次io是4k为单位，meta block是2k，为什么meta block之后的block的data_len是0？
         assert(data_len >= LOG_BLOCK_HDR_SIZE);
         assert(data_len == 512 || data_len < LOG_BLOCK_SIZE - LOG_BLOCK_TRL_SIZE);
@@ -247,39 +249,41 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
             break;
         }
     }
-    assert((log_group.written_offset + actual_len) <= log_group.log_buf_size); // 每次log writer写不会出现跨文件的情况
-    // 等待log buffer有足够的空间
-    PTHREAD_MUTEX_lock(&log_group_mutex);
-    while (log_group.written_capacity < actual_len) {
-        LogEvent(COMPONENT_FSAL, "log writer waiting for a enough space\n");
-        pthread_cond_wait(&log_write_condition, &log_group_mutex);
-    }
-    PTHREAD_MUTEX_unlock(&log_group_mutex);
+
+    if (actual_len > 0) {
+        assert((log_group.written_offset + actual_len) <= log_group.log_buf_size); // 每次log writer写不会出现跨文件的情况
+        // 等待log buffer有足够的空间
+        PTHREAD_MUTEX_lock(&log_group_mutex);
+        while (log_group.written_capacity < actual_len) {
+            LogEvent(COMPONENT_FSAL, "log writer waiting for a enough space\n");
+            pthread_cond_wait(&log_write_condition, &log_group_mutex);
+        }
+        PTHREAD_MUTEX_unlock(&log_group_mutex);
 
 //    auto start_ptr = log_group.log_buf + log_group.written_offset;
 //    auto end_ptr = start_ptr + actual_len;
-    // 把掐头去尾之后的日志拷贝到log buf
-    log_group_offset = log_file_index * log_group.per_file_size + offset;
-    for (auto [buf, i] = std::pair<unsigned char *, int>(dest_buf, 0);
-         i < blocks;
-         ++i, buf += LOG_BLOCK_SIZE) {
-        auto data_len = mach_read_from_2(buf + LOG_BLOCK_HDR_DATA_LEN);
+        // 把掐头去尾之后的日志拷贝到log buf
+        log_group_offset = log_file_index * log_group.per_file_size + offset;
+        for (auto [buf, i] = std::pair<unsigned char *, int>(dest_buf, 0);
+             i < blocks;
+             ++i, buf += LOG_BLOCK_SIZE) {
+            auto data_len = mach_read_from_2(buf + LOG_BLOCK_HDR_DATA_LEN);
 
-        data_len = (data_len == LOG_BLOCK_SIZE ? data_len - LOG_BLOCK_HDR_SIZE - LOG_BLOCK_TRL_SIZE : data_len - LOG_BLOCK_HDR_SIZE);
-        auto log_buf_offset_start = log_group_off_to_log_buf_off(log_group_offset + LOG_BLOCK_HDR_SIZE);
-        auto log_buf_offset_end = log_buf_offset_start + data_len;
-        if (log_buf_offset_end > log_group.written_offset) {
-            auto actual_data_len = log_buf_offset_end - std::max(log_group.written_offset, log_buf_offset_start);
-            auto actual_start_buf = buf + LOG_BLOCK_HDR_SIZE + data_len - actual_data_len;
-            std::memcpy(log_group.log_buf + log_group.written_offset, actual_start_buf, actual_data_len);
+            data_len = (data_len == LOG_BLOCK_SIZE ? data_len - LOG_BLOCK_HDR_SIZE - LOG_BLOCK_TRL_SIZE : data_len - LOG_BLOCK_HDR_SIZE);
+            auto log_buf_offset_start = log_group_off_to_log_buf_off(log_group_offset + LOG_BLOCK_HDR_SIZE);
+            auto log_buf_offset_end = log_buf_offset_start + data_len;
+            if (log_buf_offset_end > log_group.written_offset) {
+                auto actual_data_len = log_buf_offset_end - std::max(log_group.written_offset, log_buf_offset_start);
+                auto actual_start_buf = buf + LOG_BLOCK_HDR_SIZE + data_len - actual_data_len;
+                std::memcpy(log_group.log_buf + log_group.written_offset, actual_start_buf, actual_data_len);
 
-            log_group.written_offset = (log_group.written_offset + actual_data_len) % log_group.log_buf_size;
+                log_group.written_offset = (log_group.written_offset + actual_data_len) % log_group.log_buf_size;
+            }
+            log_group_offset += LOG_BLOCK_SIZE;
+            if (data_len != LOG_BLOCK_SIZE - LOG_BLOCK_HDR_SIZE - LOG_BLOCK_TRL_SIZE) {
+                break;
+            }
         }
-        log_group_offset += LOG_BLOCK_SIZE;
-        if (data_len != LOG_BLOCK_SIZE - LOG_BLOCK_HDR_SIZE - LOG_BLOCK_TRL_SIZE) {
-            break;
-        }
-    }
 
 //    while (start_ptr < end_ptr) {
 //        LOG_TYPE type;
@@ -292,8 +296,7 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
 //        LogEvent(COMPONENT_FSAL, "%s", GetLogString(type));
 //    }
 
-    // 更新log group的状态
-    if (actual_len > 0) {
+        // 更新log group的状态
         PTHREAD_MUTEX_lock(&log_group_mutex);
         log_group.written_capacity -= actual_len;
         log_group.need_to_parse += actual_len;
@@ -309,11 +312,14 @@ void wait_until_apply_done(int space_id, uint64_t offset) {
     auto current_written_isn = log_group.written_isn.load();
     PageAddress page_address(space_id, page_id);
     // 自旋等待log parser解析到当前已经写入的最大isn
+    LogEvent(COMPONENT_FSAL, "data page reader start reading space id = %d, offset = %lu", space_id, offset);
     while (log_group.parsed_isn < current_written_isn);
 
-    // 主动提取相关的log进行apply
+//     主动提取相关的log进行apply
+    LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, offset = %lu", space_id, offset);
     auto log_vector = apply_index.Search(page_address);
     for (const auto &item: log_vector) {
         log_apply_do_apply(page_address, item.get());
     }
+    LogEvent(COMPONENT_FSAL, "data page reader end applying space id = %d, offset = %lu", space_id, offset);
 }

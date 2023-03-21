@@ -228,7 +228,13 @@ uint32_t mach_parse_compressed(const byte **ptr, const byte* end_ptr) {
         ++*ptr;
         return val;
     }
+#if defined(__GNUC__) && (__GNUC__ >= 5) && !defined(__clang__)
+#define DEPLOY_FENCE
+#endif
 
+#ifdef DEPLOY_FENCE
+    __atomic_thread_fence(__ATOMIC_ACQUIRE);
+#endif
     if (val < 0xC0) {
         /* 10nnnnnn nnnnnnnn (14 bits) */
         if (end_ptr >= *ptr + 2) {
@@ -240,7 +246,9 @@ uint32_t mach_parse_compressed(const byte **ptr, const byte* end_ptr) {
         *ptr = nullptr;
         return 0;
     }
-
+#ifdef DEPLOY_FENCE
+    __atomic_thread_fence(__ATOMIC_ACQUIRE);
+#endif
     if (val < 0xE0) {
         /* 110nnnnn nnnnnnnn nnnnnnnn (21 bits) */
         if (end_ptr >= *ptr + 3) {
@@ -252,7 +260,9 @@ uint32_t mach_parse_compressed(const byte **ptr, const byte* end_ptr) {
         *ptr = nullptr;
         return 0;
     }
-
+#ifdef DEPLOY_FENCE
+    __atomic_thread_fence(__ATOMIC_ACQUIRE);
+#endif
     if (val < 0xF0) {
         /* 1110nnnn nnnnnnnn nnnnnnnn nnnnnnnn (28 bits) */
         if (end_ptr >= *ptr + 4) {
@@ -264,7 +274,11 @@ uint32_t mach_parse_compressed(const byte **ptr, const byte* end_ptr) {
         *ptr = nullptr;
         return 0;
     }
+#ifdef DEPLOY_FENCE
+    __atomic_thread_fence(__ATOMIC_ACQUIRE);
+#endif
 
+#undef DEPLOY_FENCE
     assert(val == 0xF0);
 
     /* 11110000 nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn (32 bits) */
