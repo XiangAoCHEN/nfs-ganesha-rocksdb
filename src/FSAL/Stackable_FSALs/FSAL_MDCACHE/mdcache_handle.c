@@ -26,25 +26,18 @@
 /* handle.c
  */
 
-#include "config.h"
+#include <os/subr.h>
+#include <pthread.h>
+#include <sys/types.h>
 
 #include "fsal.h"
-#include <libgen.h>		/* used for 'dirname' */
-#include <pthread.h>
-#include <string.h>
-#include <sys/types.h>
 #include "gsh_list.h"
-#include "fsal_convert.h"
 #include "FSAL/fsal_commonlib.h"
 #include "nfs4_acls.h"
 #include "nfs_exports.h"
 #include "sal_functions.h"
-#include <os/subr.h>
-
 #include "mdcache_lru.h"
-#include "mdcache_hash.h"
-#include "mdcache_avl.h"
-
+#include "applier/interface.h"
 /*
  * handle methods
  */
@@ -180,8 +173,20 @@ static fsal_status_t mdcache_lookup(struct fsal_obj_handle *parent,
 	*handle = NULL;
 
 	status = mdc_lookup(mdc_parent, name, true, &entry, attrs_out);
-	if (entry)
-		*handle = &entry->obj_handle;
+	if (entry) {
+        *handle = &entry->obj_handle;
+        int index = is_log_file_in_name(name);
+        if (index >= 0) {
+            // log file
+            register_log_file_handle(index, *handle);
+        }
+
+        int space_id = is_ibd_file_in_name(name);
+        if (space_id >= 0) {
+            // ibd file
+            register_ibd_file_handle(*handle, space_id);
+        }
+    }
 
 	return status;
 }

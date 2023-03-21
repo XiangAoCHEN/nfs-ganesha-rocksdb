@@ -1,0 +1,57 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"InstallPackageConfigFile",
+			"add_dependencies"
+		],
+		"files" : 
+		[
+			"cmake/modules/InstallPackageConfigFile.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1239,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 69,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 82,
+				"parent" : 1
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "install-example-config-.home.lemon.code.nfs-ganesha.src.config_samples.ganesha.conf.example::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "install-example-configs::@6890427a1f51a3e7e1df",
+	"name" : "install-example-configs",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

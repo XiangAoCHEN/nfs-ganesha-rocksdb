@@ -37,7 +37,7 @@
 #include "mdcache_int.h"
 #include "mdcache_lru.h"
 #include "mdcache.h"
-
+#include "applier/interface.h"
 /**
  * @brief Callback arg for MDCACHE async callbacks
  *
@@ -607,6 +607,11 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
 		   struct fsal_io_arg *read_arg,
 		   void *caller_arg)
 {
+    int space_id = is_ibd_file_in_handle(obj_hdl);
+    if (space_id >= 0) {
+        // read ibd file
+        wait_until_apply_done(space_id, read_arg->offset);
+    }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);
 	struct mdc_async_arg *arg;
@@ -700,6 +705,11 @@ void mdcache_write2(struct fsal_obj_handle *obj_hdl,
 		    struct fsal_io_arg *write_arg,
 		    void *caller_arg)
 {
+    int index = is_log_file_in_handle(obj_hdl);
+    if (index >= 0) {
+        copy_log_to_buf(index, write_arg->offset, write_arg->iov, write_arg->iov_count);
+//        LogEvent(COMPONENT_FSAL, "write to ib_logfile%d, offset %ld, len %ld", index, write_arg->offset, len);
+    }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);
 	struct mdc_async_arg *arg;

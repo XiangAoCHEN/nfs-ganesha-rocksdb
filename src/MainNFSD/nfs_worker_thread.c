@@ -1502,7 +1502,7 @@ retry_after_drc_suspend:
 		if (rc == NFS_REQ_ASYNC_WAIT) {
 			/* The request is suspended, don't touch the request in
 			 * any way because the resume may already be scheduled
-			 * and running on nother thread. The xp_resume_cb has
+			 * and running on another thread. The xp_resume_cb has
 			 * already been set up before we started processing
 			 * ops on this request at all.
 			 */

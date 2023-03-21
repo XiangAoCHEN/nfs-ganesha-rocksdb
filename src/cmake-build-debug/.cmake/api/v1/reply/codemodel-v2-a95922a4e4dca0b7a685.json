@@ -1,0 +1,931 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						18,
+						19,
+						20,
+						27,
+						28,
+						29,
+						30,
+						31
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-7bb815bb2605f4a4a7f2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						5,
+						6,
+						7,
+						12,
+						18,
+						19,
+						29,
+						32,
+						33,
+						37,
+						40
+					]
+				},
+				{
+					"build" : "libntirpc",
+					"childIndexes" : 
+					[
+						2,
+						3
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-libntirpc-Debug-33c06d18a8d87ff3cc48.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "libntirpc"
+				},
+				{
+					"build" : "libntirpc/src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-libntirpc.src-Debug-73351cabb276e8fd2c07.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "libntirpc/src",
+					"targetIndexes" : 
+					[
+						26
+					]
+				},
+				{
+					"build" : "libntirpc/tests",
+					"jsonFile" : "directory-libntirpc.tests-Debug-1dc7e78f265d7f4b47b2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "libntirpc/tests",
+					"targetIndexes" : 
+					[
+						28
+					]
+				},
+				{
+					"build" : "applier",
+					"jsonFile" : "directory-applier-Debug-cc979d2bb5fa82ddade6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "applier",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "log",
+					"jsonFile" : "directory-log-Debug-616fdcd8d1811c8a4e53.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "log",
+					"targetIndexes" : 
+					[
+						20
+					]
+				},
+				{
+					"build" : "config_parsing",
+					"jsonFile" : "directory-config_parsing-Debug-cf990ec541c8a2023351.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "config_parsing",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "cidr",
+					"jsonFile" : "directory-cidr-Debug-ad9dcdeab3dc24746483.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "cidr",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "test",
+					"jsonFile" : "directory-test-Debug-451c0598f41488bb20b9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "test",
+					"targetIndexes" : 
+					[
+						36,
+						38
+					]
+				},
+				{
+					"build" : "avl",
+					"jsonFile" : "directory-avl-Debug-de9f12c304c22965ff74.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "avl",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "hashtable",
+					"jsonFile" : "directory-hashtable-Debug-0edd97c97ae1deda37a9.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "hashtable",
+					"targetIndexes" : 
+					[
+						16
+					]
+				},
+				{
+					"build" : "SAL",
+					"jsonFile" : "directory-SAL-Debug-ef146a27e91bf4322ec8.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "SAL",
+					"targetIndexes" : 
+					[
+						31
+					]
+				},
+				{
+					"build" : "RPCAL",
+					"jsonFile" : "directory-RPCAL-Debug-bb4662b7c53f9546e487.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "RPCAL",
+					"targetIndexes" : 
+					[
+						27
+					]
+				},
+				{
+					"build" : "Protocols",
+					"childIndexes" : 
+					[
+						14,
+						15,
+						16,
+						17
+					],
+					"jsonFile" : "directory-Protocols-Debug-3c111062adbd37468c0a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Protocols"
+				},
+				{
+					"build" : "Protocols/NFS",
+					"jsonFile" : "directory-Protocols.NFS-Debug-3f484322a885d905b88f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 13,
+					"projectIndex" : 0,
+					"source" : "Protocols/NFS",
+					"targetIndexes" : 
+					[
+						22,
+						25
+					]
+				},
+				{
+					"build" : "Protocols/XDR",
+					"jsonFile" : "directory-Protocols.XDR-Debug-d253398e43607f6da31f.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 13,
+					"projectIndex" : 0,
+					"source" : "Protocols/XDR",
+					"targetIndexes" : 
+					[
+						23
+					]
+				},
+				{
+					"build" : "Protocols/RQUOTA",
+					"jsonFile" : "directory-Protocols.RQUOTA-Debug-2728e30560ac3e8360e8.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 13,
+					"projectIndex" : 0,
+					"source" : "Protocols/RQUOTA",
+					"targetIndexes" : 
+					[
+						30
+					]
+				},
+				{
+					"build" : "Protocols/NFSACL",
+					"jsonFile" : "directory-Protocols.NFSACL-Debug-42f806420a19e513155a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 13,
+					"projectIndex" : 0,
+					"source" : "Protocols/NFSACL",
+					"targetIndexes" : 
+					[
+						24
+					]
+				},
+				{
+					"build" : "support",
+					"jsonFile" : "directory-support-Debug-9b5e5b9a3ae061f1720b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "support",
+					"targetIndexes" : 
+					[
+						15,
+						21,
+						34,
+						35,
+						39
+					]
+				},
+				{
+					"build" : "os",
+					"jsonFile" : "directory-os-Debug-a921646d65b49ff45f7d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "os",
+					"targetIndexes" : 
+					[
+						14
+					]
+				},
+				{
+					"build" : "FSAL",
+					"childIndexes" : 
+					[
+						21,
+						23,
+						24
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-FSAL-Debug-d92db27a1997c50fac52.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "FSAL"
+				},
+				{
+					"build" : "FSAL/Stackable_FSALs",
+					"childIndexes" : 
+					[
+						22
+					],
+					"jsonFile" : "directory-FSAL.Stackable_FSALs-Debug-73a7ef9425bf92d8e82b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 20,
+					"projectIndex" : 0,
+					"source" : "FSAL/Stackable_FSALs"
+				},
+				{
+					"build" : "FSAL/Stackable_FSALs/FSAL_MDCACHE",
+					"jsonFile" : "directory-FSAL.Stackable_FSALs.FSAL_MDCACHE-Debug-f354b57eba681fd03553.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 21,
+					"projectIndex" : 0,
+					"source" : "FSAL/Stackable_FSALs/FSAL_MDCACHE",
+					"targetIndexes" : 
+					[
+						9
+					]
+				},
+				{
+					"build" : "FSAL/FSAL_PSEUDO",
+					"jsonFile" : "directory-FSAL.FSAL_PSEUDO-Debug-292ef786cce8d2b215f7.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 20,
+					"projectIndex" : 0,
+					"source" : "FSAL/FSAL_PSEUDO",
+					"targetIndexes" : 
+					[
+						10
+					]
+				},
+				{
+					"build" : "FSAL/FSAL_VFS",
+					"childIndexes" : 
+					[
+						25,
+						26
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-FSAL.FSAL_VFS-Debug-98e41126cf49065a3e83.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 20,
+					"projectIndex" : 0,
+					"source" : "FSAL/FSAL_VFS"
+				},
+				{
+					"build" : "FSAL/FSAL_VFS/os",
+					"jsonFile" : "directory-FSAL.FSAL_VFS.os-Debug-86ea9558dc56bf56fdac.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 24,
+					"projectIndex" : 0,
+					"source" : "FSAL/FSAL_VFS/os",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"build" : "FSAL/FSAL_VFS/vfs",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-FSAL.FSAL_VFS.vfs-Debug-e7f558aabce0ab7a0d2c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 24,
+					"projectIndex" : 0,
+					"source" : "FSAL/FSAL_VFS/vfs",
+					"targetIndexes" : 
+					[
+						11
+					]
+				},
+				{
+					"build" : "idmapper",
+					"jsonFile" : "directory-idmapper-Debug-cd07a776caef3d6ef43d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "idmapper",
+					"targetIndexes" : 
+					[
+						17
+					]
+				},
+				{
+					"build" : "MainNFSD",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-MainNFSD-Debug-68061872b167250acbd6.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "MainNFSD",
+					"targetIndexes" : 
+					[
+						1,
+						13
+					]
+				},
+				{
+					"build" : "tools",
+					"jsonFile" : "directory-tools-Debug-f9645b0170a45a75eff2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "tools"
+				},
+				{
+					"build" : "scripts",
+					"jsonFile" : "directory-scripts-Debug-490b6c8197cea1ac82ec.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "scripts"
+				},
+				{
+					"build" : "doc",
+					"jsonFile" : "directory-doc-Debug-00ee67dbe228fd23eb89.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "2.6.3"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "doc"
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30,
+						31
+					],
+					"name" : "nfs-ganesha",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23,
+						24,
+						25,
+						27,
+						29,
+						30,
+						31,
+						32,
+						33,
+						34,
+						35,
+						36,
+						37,
+						38,
+						39,
+						40
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"name" : "NTIRPC",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						26,
+						28
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 4,
+					"id" : "Applier::@f9434723afff6a6559a5",
+					"jsonFile" : "target-Applier-Debug-507de26fa63ffb18e5e8.json",
+					"name" : "Applier",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "MainServices::@59aeccf39c85f0723741",
+					"jsonFile" : "target-MainServices-Debug-504d030f2fa7cd43a32b.json",
+					"name" : "MainServices",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "avltree::@e87d6a55a980c7062477",
+					"jsonFile" : "target-avltree-Debug-4b80df22ad3d65c02c08.json",
+					"name" : "avltree",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "cidr::@59bdda5c8f6d73ef7c8b",
+					"jsonFile" : "target-cidr-Debug-4cd280ac9c46571a89b4.json",
+					"name" : "cidr",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "config_parsing::@aa634e281d4cea2cd6a5",
+					"jsonFile" : "target-config_parsing-Debug-84a99d076908ab6f5f9b.json",
+					"name" : "config_parsing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dist::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dist-Debug-a82130f880177e0404a1.json",
+					"name" : "dist",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "doc::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-doc-Debug-80d4ae2722622b12e4e2.json",
+					"name" : "doc",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "docker::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-docker-Debug-950c01584ad0a1b61ef3.json",
+					"name" : "docker",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 25,
+					"id" : "fsal_os::@077c03fb5609a51c7451",
+					"jsonFile" : "target-fsal_os-Debug-d5d4884505961fc260d7.json",
+					"name" : "fsal_os",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 22,
+					"id" : "fsalmdcache::@cc53c9024c5575769966",
+					"jsonFile" : "target-fsalmdcache-Debug-a63c6c566106d2be8016.json",
+					"name" : "fsalmdcache",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 23,
+					"id" : "fsalpseudo::@54f43e213cf22baaaf18",
+					"jsonFile" : "target-fsalpseudo-Debug-5393369cc5eef0ee2e93.json",
+					"name" : "fsalpseudo",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 26,
+					"id" : "fsalvfs::@22f0a9efaa86571cfeb2",
+					"jsonFile" : "target-fsalvfs-Debug-7b21599886af6edad5bd.json",
+					"name" : "fsalvfs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ganesha.nfsd::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ganesha.nfsd-Debug-af748b7c16e53bb13421.json",
+					"name" : "ganesha.nfsd",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 28,
+					"id" : "ganesha_nfsd::@59aeccf39c85f0723741",
+					"jsonFile" : "target-ganesha_nfsd-Debug-44f9f9ddef4206518d96.json",
+					"name" : "ganesha_nfsd",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 19,
+					"id" : "gos::@764cf4c35900eaba4831",
+					"jsonFile" : "target-gos-Debug-a59ecd41ab3d711c805b.json",
+					"name" : "gos",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "hash::@0c1e7a6a950cea0c3342",
+					"jsonFile" : "target-hash-Debug-e3f41b618df3cc6d0a59.json",
+					"name" : "hash",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 10,
+					"id" : "hashtable::@5b24f28f0f334b38317d",
+					"jsonFile" : "target-hashtable-Debug-b57ac791fee0209851c4.json",
+					"name" : "hashtable",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 27,
+					"id" : "idmap::@2f5567f3c9e829413ed2",
+					"jsonFile" : "target-idmap-Debug-84d40b645092190376f7.json",
+					"name" : "idmap",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "install-example-config-.home.lemon.code.nfs-ganesha.src.config_samples.ganesha.conf.example::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-install-example-config-.home.lemon.code.nfs-ganesha.src.config_samples.ganesha.conf.example-Debug-efe6487ae431750dffbf.json",
+					"name" : "install-example-config-.home.lemon.code.nfs-ganesha.src.config_samples.ganesha.conf.example",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "install-example-configs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-install-example-configs-Debug-a75df73c80826a6ecc74.json",
+					"name" : "install-example-configs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "log::@e2c7cea07f24a8229370",
+					"jsonFile" : "target-log-Debug-52c886c2a57c7fb51655.json",
+					"name" : "log",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "netgroup_cache::@0c1e7a6a950cea0c3342",
+					"jsonFile" : "target-netgroup_cache-Debug-9087d018dba8f0349919.json",
+					"name" : "netgroup_cache",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "nfs4callbacks::@e9035aea9106ccaf7d7a",
+					"jsonFile" : "target-nfs4callbacks-Debug-f596a7484394144edd3a.json",
+					"name" : "nfs4callbacks",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 15,
+					"id" : "nfs_mnt_xdr::@38951d707ff951b6a6cf",
+					"jsonFile" : "target-nfs_mnt_xdr-Debug-5cc9ae8487ea0891d843.json",
+					"name" : "nfs_mnt_xdr",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 17,
+					"id" : "nfsacl::@f97454c0b1ecff301d91",
+					"jsonFile" : "target-nfsacl-Debug-2dd5227604ee659a0e97.json",
+					"name" : "nfsacl",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 14,
+					"id" : "nfsproto::@e9035aea9106ccaf7d7a",
+					"jsonFile" : "target-nfsproto-Debug-8e20a38da6c776c8790a.json",
+					"name" : "nfsproto",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "ntirpc::@e0f1233f9e6637376249",
+					"jsonFile" : "target-ntirpc-Debug-2c77735e545257f73e2c.json",
+					"name" : "ntirpc",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 12,
+					"id" : "rpcal::@808191e6cb80c7cb3cc3",
+					"jsonFile" : "target-rpcal-Debug-762ea3260276f249fd28.json",
+					"name" : "rpcal",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "rpcping::@9c46e4ca14eeb8f14ea6",
+					"jsonFile" : "target-rpcping-Debug-0755ebb828553ff8b3ab.json",
+					"name" : "rpcping",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rpm::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rpm-Debug-ea8f15a8401a31267862.json",
+					"name" : "rpm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 16,
+					"id" : "rquota::@83680357a40f7f6c589a",
+					"jsonFile" : "target-rquota-Debug-1816fc66e243401ed220.json",
+					"name" : "rquota",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 11,
+					"id" : "sal::@cb68e0726d641a6e8a07",
+					"jsonFile" : "target-sal-Debug-096f14d9a666b7c04569.json",
+					"name" : "sal",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sm_notify.ganesha::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sm_notify.ganesha-Debug-961f64e2ae1132b889a4.json",
+					"name" : "sm_notify.ganesha",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "srpm::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-srpm-Debug-5e297aafce075b6668d0.json",
+					"name" : "srpm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "string_utils::@0c1e7a6a950cea0c3342",
+					"jsonFile" : "target-string_utils-Debug-3d95c27c76e3310e69b3.json",
+					"name" : "string_utils",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "support::@0c1e7a6a950cea0c3342",
+					"jsonFile" : "target-support-Debug-31bcc023b33889ff1da1.json",
+					"name" : "support",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "test_glist::@36f028580bb02cc8272a",
+					"jsonFile" : "target-test_glist-Debug-123d34fe7140c1b6435b.json",
+					"name" : "test_glist",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_parsing::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_parsing-Debug-03d00cf63d57c4ac5de4.json",
+					"name" : "test_parsing",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "test_url_regex::@36f028580bb02cc8272a",
+					"jsonFile" : "target-test_url_regex-Debug-ddd93348a2830734c1d1.json",
+					"name" : "test_url_regex",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 18,
+					"id" : "uid2grp::@0c1e7a6a950cea0c3342",
+					"jsonFile" : "target-uid2grp-Debug-dc9002b371e785331aa5.json",
+					"name" : "uid2grp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "verif_syntax::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-verif_syntax-Debug-8ec2d5457bd5066ad95f.json",
+					"name" : "verif_syntax",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lemon/code/nfs-ganesha/src/cmake-build-debug",
+		"source" : "/home/lemon/code/nfs-ganesha/src"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

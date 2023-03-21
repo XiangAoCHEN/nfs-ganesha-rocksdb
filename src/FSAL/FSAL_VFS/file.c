@@ -31,11 +31,9 @@
  * File I/O methods for VFS module
  */
 
-#include "config.h"
 
 #include <assert.h>
 #include "fsal.h"
-#include "FSAL/access_check.h"
 #include "fsal_convert.h"
 #include <unistd.h>
 #include <fcntl.h>
@@ -44,7 +42,7 @@
 #include "os/subr.h"
 #include "sal_data.h"
 
-fsal_status_t vfs_open_my_fd(struct vfs_fsal_obj_handle *myself,
+static fsal_status_t vfs_open_my_fd(struct vfs_fsal_obj_handle *myself,
 			     fsal_openflags_t openflags,
 			     int posix_flags,
 			     struct vfs_fd *my_fd)

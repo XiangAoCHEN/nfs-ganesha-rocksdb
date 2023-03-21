@@ -13,7 +13,8 @@ src/.settings/
 .libs/
 CMakeFiles/
 build/
-
+.idea
+src/cmake-build-debug
 # files
 *.kdevelop*
 *.kdevses

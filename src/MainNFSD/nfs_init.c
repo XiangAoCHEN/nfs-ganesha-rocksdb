@@ -78,6 +78,7 @@
 #include <urcu-bp.h>
 #include "conf_url.h"
 #include "FSAL/fsal_localfs.h"
+#include "applier/interface.h"
 
 /**
  * @brief init_complete used to indicate if ganesha is during
@@ -926,6 +927,7 @@ void nfs_start(nfs_start_info_t *p_start_info)
 	nfs_Init(p_start_info);
 	nfs_Start_threads(); /* Spawns service threads */
 
+    init_applier_module();
 	nfs_init_complete();
 
 #ifdef _USE_NLM

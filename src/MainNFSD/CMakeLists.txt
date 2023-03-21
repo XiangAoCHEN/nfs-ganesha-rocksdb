@@ -122,6 +122,7 @@ if (USE_ACL_MAPPING)
 endif(USE_ACL_MAPPING)
 
 set(ganesha_nfsd_OBJS
+    $<TARGET_OBJECTS:Applier>
     $<TARGET_OBJECTS:MainServices>
     $<TARGET_OBJECTS:avltree>
     $<TARGET_OBJECTS:cidr>

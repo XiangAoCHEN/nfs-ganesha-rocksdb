@@ -1,0 +1,711 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.24.2/CMakeSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.24.2/CMakeCCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/CMakeFiles/3.24.2/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/UnixPaths.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeFindCodeBlocks.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/ProcessorCount.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Platform/Linux-GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindToolchain.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindSanitizers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindASan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindTSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindMSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindUBSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/maintainer_mode.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPkgConfig.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/goption.cmake"
+		},
+		{
+			"path" : "cmake/cpack_config.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CPack.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CPackComponent.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Templates/CPackConfig.cmake.in"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Templates/CPackConfig.cmake.in"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckSymbolExists.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckLibraryExists.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckCSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/Internal/CheckSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/TestBigEndian.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckTypeSize.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFile.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFileCXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindThreads.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckLibraryExists.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFile.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckCSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindKrb5.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindLibACL.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindJeMalloc.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPkgConfig.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindNfsIdmap.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindRADOS.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindRADOS.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindCaps.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/InstallPackageConfigFile.cmake"
+		},
+		{
+			"path" : "cmake/modules/InstallClobberImmune.cmake"
+		},
+		{
+			"path" : "include/config-h.in.cmake"
+		},
+		{
+			"path" : "nfs-ganesha.spec-in.cmake"
+		},
+		{
+			"path" : "scripts/systemd/nfs-ganesha-config.service-in.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindLSB.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "scripts/docker/entrypoint.sh-in.cmake"
+		},
+		{
+			"path" : "scripts/docker/Dockerfile-in.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindDoxygen.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "Doxyfile.in"
+		},
+		{
+			"path" : "libntirpc/CMakeLists.txt"
+		},
+		{
+			"path" : "cmake/maintainer_mode.cmake"
+		},
+		{
+			"path" : "cmake/modules/GetGitRevisionDescription.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/code/nfs-ganesha/.git/HEAD"
+		},
+		{
+			"path" : "cmake/modules/GetGitRevisionDescription.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libntirpc/CMakeFiles/git-data/grabRef.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/code/nfs-ganesha/.git/refs/heads/next"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindGit.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/code/nfs-ganesha/.git/HEAD"
+		},
+		{
+			"path" : "cmake/modules/GetGitRevisionDescription.cmake.in"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "cmake-build-debug/libntirpc/CMakeFiles/git-data/grabRef.cmake"
+		},
+		{
+			"isExternal" : true,
+			"path" : "/home/lemon/code/nfs-ganesha/.git/refs/heads/next"
+		},
+		{
+			"path" : "cmake/modules/FindKrb5.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/TestBigEndian.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindThreads.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckLibraryExists.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFile.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckCSourceCompiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindEPOLL.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckIncludeFiles.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/CheckFunctionExists.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindSanitizers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindASan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindTSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindMSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindUBSan.cmake"
+		},
+		{
+			"path" : "cmake/modules/sanitize-helpers.cmake"
+		},
+		{
+			"path" : "libntirpc/cmake/modules/FindNSL.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"path" : "cmake/modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cmake/modules/CMakeParseArguments.cmake"
+		},
+		{
+			"path" : "libntirpc/src/libntirpc.map.in.cmake"
+		},
+		{
+			"path" : "libntirpc/config-h.in.cmake"
+		},
+		{
+			"path" : "libntirpc/version-h.in.cmake"
+		},
+		{
+			"path" : "libntirpc/libntirpc.pc.in.cmake"
+		},
+		{
+			"path" : "libntirpc/libntirpc.spec-in.cmake"
+		},
+		{
+			"path" : "libntirpc/src/CMakeLists.txt"
+		},
+		{
+			"path" : "libntirpc/tests/CMakeLists.txt"
+		},
+		{
+			"path" : "applier/CMakeLists.txt"
+		},
+		{
+			"path" : "log/CMakeLists.txt"
+		},
+		{
+			"path" : "config_parsing/CMakeLists.txt"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindBISON.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindFLEX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageHandleStandardArgs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "/home/lemon/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/223.8617.54/bin/cmake/linux/x64/share/cmake-3.24/Modules/FindPackageMessage.cmake"
+		},
+		{
+			"path" : "cidr/CMakeLists.txt"
+		},
+		{
+			"path" : "test/CMakeLists.txt"
+		},
+		{
+			"path" : "avl/CMakeLists.txt"
+		},
+		{
+			"path" : "hashtable/CMakeLists.txt"
+		},
+		{
+			"path" : "SAL/CMakeLists.txt"
+		},
+		{
+			"path" : "RPCAL/CMakeLists.txt"
+		},
+		{
+			"path" : "Protocols/CMakeLists.txt"
+		},
+		{
+			"path" : "Protocols/NFS/CMakeLists.txt"
+		},
+		{
+			"path" : "Protocols/XDR/CMakeLists.txt"
+		},
+		{
+			"path" : "Protocols/RQUOTA/CMakeLists.txt"
+		},
+		{
+			"path" : "Protocols/NFSACL/CMakeLists.txt"
+		},
+		{
+			"path" : "support/CMakeLists.txt"
+		},
+		{
+			"path" : "os/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/FSAL_PSEUDO/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/FSAL_VFS/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/FSAL_VFS/os/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/FSAL_VFS/vfs/CMakeLists.txt"
+		},
+		{
+			"path" : "FSAL/FSAL_VFS/vfs/main-c.in.cmake"
+		},
+		{
+			"path" : "idmapper/CMakeLists.txt"
+		},
+		{
+			"path" : "MainNFSD/CMakeLists.txt"
+		},
+		{
+			"path" : "tools/CMakeLists.txt"
+		},
+		{
+			"path" : "scripts/CMakeLists.txt"
+		},
+		{
+			"path" : "doc/CMakeLists.txt"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "/home/lemon/code/nfs-ganesha/src/cmake-build-debug",
+		"source" : "/home/lemon/code/nfs-ganesha/src"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 0
+	}
+}

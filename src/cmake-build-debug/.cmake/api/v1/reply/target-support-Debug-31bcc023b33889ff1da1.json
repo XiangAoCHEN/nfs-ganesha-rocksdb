@@ -1,0 +1,276 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs4_acls.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs_creds.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs_filehandle_mgmt.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs_read_conf.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs_convert.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs_ip_name.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/ds.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/exports.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/fridgethr.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/delayed_exec.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/bsd-base64.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/server_stats.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/export_mgr.c.o"
+		},
+		{
+			"path" : "support/CMakeFiles/support.dir/nfs4_fs_locations.c.o"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"support/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 96,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1058,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1065,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1210,
+				"parent" : 2
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -fno-strict-aliasing -Werror -Wall -Wimplicit -Wformat -Wmissing-braces -Wreturn-type -Wunused-variable -Wuninitialized -Wno-pointer-sign -Wno-strict-aliasing -g -fdiagnostics-color=always"
+				},
+				{
+					"fragment" : "-fPIC"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "HAS_DOFF"
+				},
+				{
+					"define" : "_GNU_SOURCE=1"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include/os/linux"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/home/lemon/code/nfs-ganesha/src/libntirpc/ntirpc"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			]
+		}
+	],
+	"id" : "support::@0c1e7a6a950cea0c3342",
+	"name" : "support",
+	"paths" : 
+	{
+		"build" : "support",
+		"source" : "support"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs4_acls.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs_creds.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs_filehandle_mgmt.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs_read_conf.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs_convert.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs_ip_name.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/ds.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/exports.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/fridgethr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/delayed_exec.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/bsd-base64.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/server_stats.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/export_mgr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "support/nfs4_fs_locations.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

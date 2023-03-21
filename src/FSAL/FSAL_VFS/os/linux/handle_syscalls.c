@@ -29,7 +29,7 @@
 #include "fsal_convert.h"
 #include "FSAL/fsal_commonlib.h"
 #include "../../vfs_methods.h"
-
+#include "applier/interface.h"
 /* We can at most support 40 byte handles, which are the largest known.
  * We also expect handles to be at least 4 bytes.
  */
@@ -191,7 +191,11 @@ int vfs_map_name_to_handle_at(int fd,
 	kernel_fh->handle_bytes = VFS_MAX_HANDLE;
 
 	rc = name_to_handle_at(fd, path, kernel_fh, &mnt_id, flags);
-
+//    int index = is_log_file_in_name(path);
+//    LogEvent(COMPONENT_FSAL, "path = %s, index = %d", path, index);
+//    if (index >= 0) {
+//        register_log_file_handle(index, fh);
+//    }
 	if (rc < 0) {
 		int err = errno;
 

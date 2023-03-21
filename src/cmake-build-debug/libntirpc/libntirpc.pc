@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${prefix}//usr/lib
+includedir=${prefix}/include/ntirpc
+
+Name: libntirpc
+Description: New Transport Independent RPC Library
+Requires:
+Version: 4.3
+Libs: -lntirpc
+Cflags: -I${prefix}/include/ntirpc

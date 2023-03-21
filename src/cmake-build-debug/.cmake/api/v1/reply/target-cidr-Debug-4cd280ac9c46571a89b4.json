@@ -1,0 +1,244 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_addr.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_compare.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_from_str.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_get.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_inaddr.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_mem.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_misc.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_net.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_num.c.o"
+		},
+		{
+			"path" : "cidr/CMakeFiles/cidr.dir/cidr_to_str.c.o"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"cidr/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 39,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1058,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1065,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 1210,
+				"parent" : 2
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -fno-strict-aliasing -Werror -Wall -Wimplicit -Wformat -Wmissing-braces -Wreturn-type -Wunused-variable -Wuninitialized -Wno-pointer-sign -Wno-strict-aliasing -g -fdiagnostics-color=always"
+				},
+				{
+					"fragment" : "-fPIC"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "HAS_DOFF"
+				},
+				{
+					"define" : "_GNU_SOURCE=1"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include/os/linux"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/home/lemon/code/nfs-ganesha/src/libntirpc/ntirpc"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		}
+	],
+	"id" : "cidr::@59bdda5c8f6d73ef7c8b",
+	"name" : "cidr",
+	"paths" : 
+	{
+		"build" : "cidr",
+		"source" : "cidr"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				10
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_addr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_compare.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_from_str.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_get.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_inaddr.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_mem.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_misc.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_net.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_num.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "cidr/cidr_to_str.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "cidr/cidr_pow2_p.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

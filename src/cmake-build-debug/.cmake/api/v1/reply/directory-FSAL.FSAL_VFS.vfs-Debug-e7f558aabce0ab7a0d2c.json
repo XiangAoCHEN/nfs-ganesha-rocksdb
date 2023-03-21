@@ -1,0 +1,45 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"FSAL/FSAL_VFS/vfs/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 75,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "fsal",
+			"destination" : "/usr/lib/ganesha",
+			"paths" : 
+			[
+				"lib/libfsalvfs.so"
+			],
+			"targetId" : "fsalvfs::@22f0a9efaa86571cfeb2",
+			"targetIndex" : 11,
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "FSAL/FSAL_VFS/vfs",
+		"source" : "FSAL/FSAL_VFS/vfs"
+	}
+}

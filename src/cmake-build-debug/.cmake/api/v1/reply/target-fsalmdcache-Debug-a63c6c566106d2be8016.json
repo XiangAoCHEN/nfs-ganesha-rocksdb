@@ -1,0 +1,290 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_handle.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_file.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_xattrs.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_main.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_export.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_helpers.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_lru.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_hash.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_avl.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_read_conf.c.o"
+		},
+		{
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeFiles/fsalmdcache.dir/mdcache_up.c.o"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"FSAL/Stackable_FSALs/FSAL_MDCACHE/CMakeLists.txt",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 55,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 22,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1058,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1065,
+				"parent" : 3
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 1210,
+				"parent" : 3
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -fno-strict-aliasing -Werror -Wall -Wimplicit -Wformat -Wmissing-braces -Wreturn-type -Wunused-variable -Wuninitialized -Wno-pointer-sign -Wno-strict-aliasing -g -fdiagnostics-color=always"
+				},
+				{
+					"fragment" : "-fPIC"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "HAS_DOFF"
+				},
+				{
+					"define" : "_GNU_SOURCE=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "__USE_GNU"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/home/lemon/code/nfs-ganesha/src/include/os/linux"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/include"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/home/lemon/code/nfs-ganesha/src/libntirpc/ntirpc"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			]
+		}
+	],
+	"id" : "fsalmdcache::@cc53c9024c5575769966",
+	"name" : "fsalmdcache",
+	"paths" : 
+	{
+		"build" : "FSAL/Stackable_FSALs/FSAL_MDCACHE",
+		"source" : "FSAL/Stackable_FSALs/FSAL_MDCACHE"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_avl.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_ext.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_int.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_hash.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_lru.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_handle.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_file.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_xattrs.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_main.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_export.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_helpers.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_lru.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_hash.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_avl.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_read_conf.c",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "FSAL/Stackable_FSALs/FSAL_MDCACHE/mdcache_up.c",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "OBJECT_LIBRARY"
+}

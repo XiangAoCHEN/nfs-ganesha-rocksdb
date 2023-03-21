@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="fileTypesIncluded" value="h;c;cpp;" />
+    <option name="excludeDotArtifactDirectory" value="true" />
+    <option name="activateWhenOpenProject" value="true" />
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/coverity" />
+        <option value="$PROJECT_DIR$/jenkins" />
+        <option value="$PROJECT_DIR$/src/cmake-build-debug" />
+        <option value="$PROJECT_DIR$/src/libntirpc" />
+        <option value="$PROJECT_DIR$/src/config_parsing" />
+        <option value="$PROJECT_DIR$/src/cmake" />
+        <option value="$PROJECT_DIR$/src/avl" />
+        <option value="$PROJECT_DIR$/src/cidr" />
+        <option value="$PROJECT_DIR$/src/cmake-build-debug" />
+        <option value="$PROJECT_DIR$/src/dbus" />
+        <option value="$PROJECT_DIR$/src/config_samples" />
+        <option value="$PROJECT_DIR$/src/doc" />
+        <option value="$PROJECT_DIR$/src/FSAL" />
+        <option value="$PROJECT_DIR$/src/FSAL_UP" />
+        <option value="$PROJECT_DIR$/src/gtest" />
+        <option value="$PROJECT_DIR$/src/hashtable" />
+        <option value="$PROJECT_DIR$/src/idmapper" />
+        <option value="$PROJECT_DIR$/src/libntirpc" />
+        <option value="$PROJECT_DIR$/src/log" />
+        <option value="$PROJECT_DIR$/src/MainNFSD" />
+        <option value="$PROJECT_DIR$/src/os" />
+        <option value="$PROJECT_DIR$/src/RPCAL" />
+        <option value="$PROJECT_DIR$/src/Protocols" />
+        <option value="$PROJECT_DIR$/src/SAL" />
+        <option value="$PROJECT_DIR$/src/scripts" />
+        <option value="$PROJECT_DIR$/src/selinux" />
+        <option value="$PROJECT_DIR$/src/support" />
+        <option value="$PROJECT_DIR$/src/test" />
+        <option value="$PROJECT_DIR$/src/tools" />
+        <option value="$PROJECT_DIR$/src/tracing" />
+        <option value="$PROJECT_DIR$/src/include/FSAL" />
+        <option value="$PROJECT_DIR$/src/include/gsh_lttng" />
+        <option value="$PROJECT_DIR$/src/include/os" />
+      </list>
+    </option>
+  </component>
+</project>

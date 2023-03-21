@@ -24,6 +24,8 @@
 # Current version as of Fedora 16.  Not tested with earlier.
 
 cmake_minimum_required(VERSION 2.6.3)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
 
 message( STATUS "cmake version ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}" )
 
@@ -1229,11 +1231,14 @@ set(SYSTEM_LIBRARIES
 )
 
 include_directories(${LIBURCU_INC})
-
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Config file; make sure it doesn't clobber an existing one
 include(${GANESHA_TOP_CMAKE_DIR}/cmake/modules/InstallPackageConfigFile.cmake)
 InstallPackageConfigFile(${GANESHA_TOP_CMAKE_DIR}/config_samples/ganesha.conf.example ${SYSCONFDIR}/ganesha ganesha.conf)
 
+add_subdirectory(applier)
 add_subdirectory(log)
 add_subdirectory(config_parsing)
 add_subdirectory(cidr)

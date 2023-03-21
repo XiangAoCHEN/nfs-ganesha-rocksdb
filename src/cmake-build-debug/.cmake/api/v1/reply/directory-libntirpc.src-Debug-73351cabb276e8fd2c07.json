@@ -1,0 +1,59 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install"
+		],
+		"files" : 
+		[
+			"libntirpc/src/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 113,
+				"parent" : 0
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "/usr/lib",
+			"paths" : 
+			[
+				"libntirpc/src/libntirpc.so.4.3"
+			],
+			"targetId" : "ntirpc::@e0f1233f9e6637376249",
+			"targetIndex" : 26,
+			"targetInstallNamelink" : "skip",
+			"type" : "target"
+		},
+		{
+			"backtrace" : 1,
+			"component" : "Unspecified",
+			"destination" : "/usr/lib",
+			"paths" : 
+			[
+				"libntirpc/src/libntirpc.so"
+			],
+			"targetId" : "ntirpc::@e0f1233f9e6637376249",
+			"targetIndex" : 26,
+			"targetInstallNamelink" : "only",
+			"type" : "target"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "libntirpc/src",
+		"source" : "libntirpc/src"
+	}
+}

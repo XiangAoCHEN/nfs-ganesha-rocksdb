@@ -32,7 +32,6 @@
  */
 
 #include "config.h"
-
 #ifdef LINUX
 #include <sys/sysmacros.h> /* for makedev(3) */
 #endif
@@ -51,10 +50,9 @@
 #include "subfsal.h"
 #include "city.h"
 #include "nfs_core.h"
-#include "nfs_proto_tools.h"
-
 /* helpers
  */
+
 
 int vfs_fsal_open(struct vfs_fsal_obj_handle *hdl,
 		  int openflags,
