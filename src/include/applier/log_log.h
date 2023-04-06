@@ -8,6 +8,7 @@
 #include <list>
 #include <unordered_map>
 #include <atomic>
+#include <unordered_set>
 #include "applier/applier_config.h"
 #include "applier/bean.h"
 #include "applier/hash_util.h"
@@ -109,11 +110,13 @@ public:
     void Insert(const struct fsal_obj_handle* handle, space_id_t space_id);
     int Exist(const std::string &filename);
     int Exist(const struct fsal_obj_handle* handle);
+    bool Exist(space_id_t space_id);
 private:
     DataPageGroup() { pthread_rwlock_init(&rw_lock_, nullptr); }
     ~DataPageGroup() { pthread_rwlock_destroy(&rw_lock_); }
     std::unordered_map<std::string, space_id_t> filename2space_id_ {};
     std::unordered_map<const struct fsal_obj_handle*, space_id_t> handle2space_id_ {};
+    std::unordered_set<space_id_t> space_id_ {};
     pthread_rwlock_t rw_lock_ {};
 };
 

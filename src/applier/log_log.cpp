@@ -75,6 +75,7 @@ log_applier_t::log_applier_t() {
 void DataPageGroup::Insert(const std::string &filename, space_id_t space_id) {
     pthread_rwlock_wrlock(&rw_lock_);
     filename2space_id_[filename] = space_id;
+    space_id_.insert(space_id);
     pthread_rwlock_unlock(&rw_lock_);
 }
 
@@ -86,6 +87,7 @@ DataPageGroup &DataPageGroup::Get() {
 void DataPageGroup::Insert(const struct fsal_obj_handle *handle, space_id_t space_id) {
     pthread_rwlock_wrlock(&rw_lock_);
     handle2space_id_[handle] = space_id;
+    space_id_.insert(space_id);
     pthread_rwlock_unlock(&rw_lock_);
 }
 
@@ -107,4 +109,8 @@ int DataPageGroup::Exist(const struct fsal_obj_handle *handle) {
     }
     pthread_rwlock_unlock(&rw_lock_);
     return res;
+}
+
+bool DataPageGroup::Exist(space_id_t space_id) {
+    return space_id_.find(space_id) != space_id_.end();
 }

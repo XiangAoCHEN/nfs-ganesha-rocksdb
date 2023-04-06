@@ -204,5 +204,23 @@ bool BufferPool::WriteBack(space_id_t space_id, page_id_t page_id) {
     return false;
 }
 
+bool BufferPool::WriteBackLock(space_id_t space_id, page_id_t page_id) {
+    PthreadMutexGuard guard(lock_);
+    // 找找看是不是在buffer pool中
+    if (hash_map_.find(space_id) != hash_map_.end() && hash_map_[space_id].find(page_id) != hash_map_[space_id].end()) {
+        frame_id_t frame_id = *(hash_map_[space_id][page_id]);
+        auto fs = space_id_2_file_name_[space_id].stream_;
+        fs->seekp(static_cast<std::streamoff>(page_id * DATA_PAGE_SIZE));
+        fs->write(reinterpret_cast<char *>(buffer_[frame_id].GetData()), DATA_PAGE_SIZE);
+        return true;
+    }
+    return false;
+}
+
+void BufferPool::CopyPage(void *dest_buf, space_id_t space_id, page_id_t page_id) {
+    Page *page = GetPage(space_id, page_id);
+    std::memcpy(dest_buf, page->data_, DATA_PAGE_SIZE);
+}
+
 BufferPool buffer_pool;
 

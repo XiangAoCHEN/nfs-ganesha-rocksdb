@@ -185,7 +185,10 @@ void register_ibd_file_handle(struct fsal_obj_handle *handle, int space_id) {
 const auto copy_buf_size = 8 << 10 << 10; // 8M
 unsigned char* const copy_buf = new unsigned char[copy_buf_size] ;
 
+pthread_mutex_t log_writer_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int iov_count) {
+    PthreadMutexGuard guard(log_writer_mutex);
 
     assert(offset % LOG_BLOCK_SIZE == 0); // offset必须是block对齐的
 
@@ -269,10 +272,14 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
              ++i, buf += LOG_BLOCK_SIZE) {
             auto data_len = mach_read_from_2(buf + LOG_BLOCK_HDR_DATA_LEN);
 
+            assert(data_len >= LOG_BLOCK_HDR_SIZE);
+            assert(data_len == 512 || data_len < LOG_BLOCK_SIZE - LOG_BLOCK_TRL_SIZE);
+
             data_len = (data_len == LOG_BLOCK_SIZE ? data_len - LOG_BLOCK_HDR_SIZE - LOG_BLOCK_TRL_SIZE : data_len - LOG_BLOCK_HDR_SIZE);
             auto log_buf_offset_start = log_group_off_to_log_buf_off(log_group_offset + LOG_BLOCK_HDR_SIZE);
             auto log_buf_offset_end = log_buf_offset_start + data_len;
             if (log_buf_offset_end > log_group.written_offset) {
+                assert(log_buf_offset_start <= log_group.written_offset); // 写log必须是挨个写，不能出现空洞
                 auto actual_data_len = log_buf_offset_end - std::max(log_group.written_offset, log_buf_offset_start);
                 auto actual_start_buf = buf + LOG_BLOCK_HDR_SIZE + data_len - actual_data_len;
                 std::memcpy(log_group.log_buf + log_group.written_offset, actual_start_buf, actual_data_len);
@@ -306,20 +313,33 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
     }
 }
 
-void wait_until_apply_done(int space_id, uint64_t offset) {
+void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
     assert(offset % DATA_PAGE_SIZE == 0);
-    page_id_t page_id = offset / DATA_PAGE_SIZE;
+    assert(io_amount % DATA_PAGE_SIZE == 0);
+    page_id_t start_page_id = offset / DATA_PAGE_SIZE;
+    page_id_t end_page_id = start_page_id + io_amount / DATA_PAGE_SIZE;
     auto current_written_isn = log_group.written_isn.load();
-    PageAddress page_address(space_id, page_id);
-    // 自旋等待log parser解析到当前已经写入的最大isn
-    LogEvent(COMPONENT_FSAL, "data page reader start reading space id = %d, offset = %lu", space_id, offset);
-    while (log_group.parsed_isn < current_written_isn);
+
+    for (page_id_t page_id = start_page_id; page_id < end_page_id; page_id++) {
+        PageAddress page_address(space_id, page_id);
+        // 自旋等待log parser解析到当前已经写入的最大isn
+//        LogEvent(COMPONENT_FSAL, "data page reader start reading space id = %d, page_id = %u", space_id, page_id);
+        while (log_group.parsed_isn < current_written_isn);
 
 //     主动提取相关的log进行apply
-    LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, offset = %lu", space_id, offset);
-    auto log_vector = apply_index.Search(page_address);
-    for (const auto &item: log_vector) {
-        log_apply_do_apply(page_address, item.get());
+//        LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, page_id = %u", space_id, page_id);
+        auto log_vector = apply_index.Search(page_address);
+//        int count = 0;
+        for (const auto &item: log_vector) {
+            log_apply_do_apply(page_address, item.get());
+//            count += item.get()->size();
+        }
+//        if (count > 0) {
+//            LogEvent(COMPONENT_FSAL, "data page reader end applying space id = %d, page_id = %u, applied %d logs", space_id, page_id, count);
+//        }
     }
-    LogEvent(COMPONENT_FSAL, "data page reader end applying space id = %d, offset = %lu", space_id, offset);
+}
+
+void copy_page_to_buf(void *dest_buf, space_id_t space_id, page_id_t page_id) {
+    buffer_pool.CopyPage(dest_buf, space_id, page_id);
 }

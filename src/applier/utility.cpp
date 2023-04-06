@@ -12,7 +12,8 @@ bool TravelDirectory(const std::string &dir_path, const std::string &suffix, std
     DIR *d;
     struct dirent *file;
     if(!(d = opendir(dir_path.data()))) {
-        std::cout << "open directory " << dir_path << " failed!!!" << std::endl;
+        std::cerr << "open directory " << dir_path << " failed!!!" << std::endl;
+        exit(1);
         closedir(d);
         return false;
     }

@@ -86,6 +86,7 @@ void* log_parse_thread_routine(void*) {
     for (;;) {
 //        log_parse_init();
         auto need_to_parse = log_parse_acquire(0);
+        assert(need_to_parse > 0);
         log_parse_init_parse_buf(need_to_parse);
 
         // 从parse buffer中循环解析日志，放到哈希表中
@@ -115,7 +116,7 @@ void* log_parse_thread_routine(void*) {
             start_ptr += len;
             log_parser.parsed_lsn = recv_calc_lsn_on_data_add(log_parser.parsed_lsn, len);
         }
-        LogEvent(COMPONENT_FSAL, "log parser parsed a batch log %zu bytes", total_len);
+//        LogEvent(COMPONENT_FSAL, "log parser parsed a batch log %zu bytes", total_len);
     }
 }
 

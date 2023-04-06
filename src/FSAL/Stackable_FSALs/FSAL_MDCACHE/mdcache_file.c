@@ -610,7 +610,11 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
     int space_id = is_ibd_file_in_handle(obj_hdl);
     if (space_id >= 0) {
         // read ibd file
-        wait_until_apply_done(space_id, read_arg->offset);
+        size_t io_amount = 0;
+        for (int i = 0; i < read_arg->iov_count; ++i) {
+            io_amount += read_arg->iov[i].iov_len;
+        }
+        wait_until_apply_done(space_id, read_arg->offset, io_amount);
     }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);
@@ -626,6 +630,30 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
 		entry->sub_handle->obj_ops->read2(entry->sub_handle, bypass,
 						 mdc_read_cb, read_arg, arg)
 	       );
+
+//    if (space_id >= 0) {
+//#define PAGE_SIZE 16384
+//        size_t io_amount = read_arg->io_amount;
+//        assert(io_amount % PAGE_SIZE == 0);
+//        char actual_page_buf[io_amount];
+//        size_t actual_read = 0;
+//        char applied_page_buf[io_amount];
+//        for (int i = 0; i < read_arg->iov_count; ++i) {
+//            memcpy(actual_page_buf + actual_read, read_arg->iov[i].iov_base, read_arg->iov[i].iov_len);
+//            actual_read += read_arg->iov[i].iov_len;
+//        }
+//        assert(actual_read == io_amount);
+//        uint32_t start_page_id = read_arg->offset / PAGE_SIZE;
+//        uint32_t end_page_id = start_page_id + io_amount / PAGE_SIZE;
+//        actual_read = 0;
+//        for (uint32_t page_id = start_page_id; page_id < end_page_id; ++page_id) {
+//            copy_page_to_buf(applied_page_buf + actual_read, space_id, page_id);
+//            assert(memcmp(actual_page_buf + actual_read, applied_page_buf + actual_read, PAGE_SIZE) == 0);
+//            actual_read += PAGE_SIZE;
+//        }
+//        assert(actual_read == io_amount);
+//#undef PAGE_SIZE
+//    }
 }
 
 /**
@@ -707,9 +735,9 @@ void mdcache_write2(struct fsal_obj_handle *obj_hdl,
 {
     int index = is_log_file_in_handle(obj_hdl);
     if (index >= 0) {
-        LogEvent(COMPONENT_FSAL, "log writer start write to ib_logfile%d, offset %ld", index, write_arg->offset);
+//        LogEvent(COMPONENT_FSAL, "thread[%ld] log writer start write to ib_logfile%d, offset %ld", pthread_self(), index, write_arg->offset);
         copy_log_to_buf(index, write_arg->offset, write_arg->iov, write_arg->iov_count);
-        LogEvent(COMPONENT_FSAL, "log writer end write to ib_logfile%d, offset %ld", index, write_arg->offset);
+//        LogEvent(COMPONENT_FSAL, "thread[%ld] log writer end write to ib_logfile%d, offset %ld", pthread_self(), index, write_arg->offset);
     }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);

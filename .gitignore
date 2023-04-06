@@ -14,7 +14,7 @@ src/.settings/
 CMakeFiles/
 build/
 .idea
-src/cmake-build-debug
+src/cmake-build-debug/
 # files
 *.kdevelop*
 *.kdevses

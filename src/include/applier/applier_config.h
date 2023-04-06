@@ -11,24 +11,54 @@ using trx_id_t = uint64_t;
 using roll_ptr_t = uint64_t;
 
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
-static constexpr const char * LOG_PATH_PREFIX = "/home/lemon/mysql/data/";
+static constexpr const char * LOG_PATH_PREFIX = "/media/lemon/samsung980/mysql/data/";
 static constexpr const char * LOG_FILES_BASE_NAME = "ib_logfile";
 static constexpr int LOG_FILE_NUMBER = 2;
 static constexpr int APPLIER_THREAD = 1;
-static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/sbtest_back"; // don't suffix by '/'
+static constexpr const char * DATA_FILE_PREFIX = "/media/lemon/samsung980/mysql/data/sbtest_back"; // don't suffix by '/'
 static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
-                                    "sbtest2.ibd",
-                                    "sbtest3.ibd",
-                                    "sbtest4.ibd",
-                                    "sbtest5.ibd",
-                                    "sbtest6.ibd",
-                                    "sbtest7.ibd",
-                                    "sbtest8.ibd",
-                                    "sbtest9.ibd",
-                                    "sbtest10.ibd"
+                                              "sbtest2.ibd",
+                                              "sbtest3.ibd",
+                                              "sbtest4.ibd",
+                                              "sbtest5.ibd",
+                                              "sbtest6.ibd",
+                                              "sbtest7.ibd",
+                                              "sbtest8.ibd",
+                                              "sbtest9.ibd",
+                                              "sbtest10.ibd",
+                                              "sbtest11.ibd",
+                                              "sbtest12.ibd",
+                                              "sbtest13.ibd",
+                                              "sbtest14.ibd",
+                                              "sbtest15.ibd",
+                                              "sbtest16.ibd",
+                                              "sbtest17.ibd",
+                                              "sbtest18.ibd",
+                                              "sbtest19.ibd",
+                                              "sbtest20.ibd",
+                                              "sbtest21.ibd",
+                                              "sbtest22.ibd",
+                                              "sbtest23.ibd",
+                                              "sbtest24.ibd",
+                                              "sbtest25.ibd",
+                                              "sbtest26.ibd",
+                                              "sbtest27.ibd",
+                                              "sbtest28.ibd",
+                                              "sbtest29.ibd",
+                                              "sbtest30.ibd",
+                                              "sbtest31.ibd",
+                                              "sbtest32.ibd",
+                                              "sbtest33.ibd",
+                                              "sbtest34.ibd",
+                                              "sbtest35.ibd",
+                                              "sbtest36.ibd",
+                                              "sbtest37.ibd",
+                                              "sbtest38.ibd",
+                                              "sbtest39.ibd",
+                                              "sbtest40.ibd",
 };
 
-static constexpr uint32_t PER_LOG_FILE_SIZE = 48 * 1024 * 1204; // 48M
+static constexpr uint32_t PER_LOG_FILE_SIZE = 1024 * 1024 * 1204; // 1G
 // log block size in bytes
 static constexpr size_t LOG_BLOCK_SIZE = 512;
 
@@ -46,9 +76,9 @@ static constexpr uint32_t N_LOG_METADATA_BLOCK_BYTES = N_LOG_METADATA_BLOCKS * L
 static constexpr lsn_t LOG_START_LSN = 8716;
 
 
-static constexpr uint32_t N_BLOCKS_IN_A_PAGE = DATA_PAGE_SIZE / LOG_BLOCK_SIZE; // 48M
+static constexpr uint32_t N_BLOCKS_IN_A_PAGE = DATA_PAGE_SIZE / LOG_BLOCK_SIZE;
 
-static constexpr uint32_t BUFFER_POOL_SIZE = 8 * 1024; // buffer pool size in data_page_size
+static constexpr uint32_t BUFFER_POOL_SIZE = 8 * 1024; // buffer pool size in data_page_size 128MB
 
 // redo log 相关的偏移量
 static constexpr uint32_t LOG_BLOCK_HDR_NO = 0;

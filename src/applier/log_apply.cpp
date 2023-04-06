@@ -85,7 +85,7 @@ void log_apply_do_apply(const PageAddress &page_address, std::list<LogEntry> *lo
     auto space_id = page_address.SpaceId();
 
     // skip!
-    if (!(space_id >= 24 && space_id <= 33)) {
+    if (!(DataPageGroup::Get().Exist(space_id))) {
         return;
     }
 
@@ -111,6 +111,7 @@ void log_apply_do_apply(const PageAddress &page_address, std::list<LogEntry> *lo
             page->WriteCheckSum(BUF_NO_CHECKSUM_MAGIC);
         }
     }
+    buffer_pool.WriteBackLock(space_id, page_id);
 }
 
 static void log_apply_worker_work(int worker_index) {
