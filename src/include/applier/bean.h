@@ -78,6 +78,8 @@ public:
     uint32_t precise_type_;
     uint32_t length_;
     uint32_t fixed_length_;
+    uint32_t mbminlen_ {};
+    uint32_t mbmaxlen_ {};
 };
 
 class RecordInfo {

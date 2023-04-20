@@ -362,7 +362,7 @@ int nfs3_read(nfs_arg_t *arg, struct svc_req *req, nfs_res_t *res)
 	reqdata->proc_data = read_data;
 
 	/* Do the actual read */
-	obj->obj_ops->read2(obj, true, nfs3_read_cb, read_arg, read_data);
+	obj->obj_ops->read2(obj, true, nfs3_read_cb, read_arg, read_data, false);
 
 	/* Only atomically set the flags if we actually call read2, otherwise
 	 * we will have indicated as having been DONE.

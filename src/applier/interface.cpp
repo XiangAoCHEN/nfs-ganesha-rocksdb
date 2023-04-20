@@ -340,6 +340,9 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
     }
 }
 
-void copy_page_to_buf(void *dest_buf, space_id_t space_id, page_id_t page_id) {
-    buffer_pool.CopyPage(dest_buf, space_id, page_id);
+void copy_page_to_buf(char *dest_buf, space_id_t space_id, page_id_t start_page_id, int n_pages) {
+    for (int i = 0; i < n_pages; ++i) {
+        buffer_pool.CopyPage(dest_buf + (i * DATA_PAGE_SIZE), space_id, start_page_id + i);
+    }
+
 }

@@ -688,7 +688,7 @@ static enum nfs_req_result nfs4_read(struct nfs_argop4 *op,
 	}
 
 	/* Do the actual read */
-	obj->obj_ops->read2(obj, bypass, nfs4_read_cb, read_arg, read_data);
+	obj->obj_ops->read2(obj, bypass, nfs4_read_cb, read_arg, read_data, false);
 
 	/* Only atomically set the flags if we actually call read2, otherwise
 	 * we will have indicated as having been DONE.

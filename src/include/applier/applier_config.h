@@ -11,11 +11,13 @@ using trx_id_t = uint64_t;
 using roll_ptr_t = uint64_t;
 
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
-static constexpr const char * LOG_PATH_PREFIX = "/media/lemon/samsung980/mysql/data/";
+static constexpr const char * LOG_PATH_PREFIX = "/home/lemon/mysql/data/";
 static constexpr const char * LOG_FILES_BASE_NAME = "ib_logfile";
 static constexpr int LOG_FILE_NUMBER = 2;
 static constexpr int APPLIER_THREAD = 1;
-static constexpr const char * DATA_FILE_PREFIX = "/media/lemon/samsung980/mysql/data/sbtest_back"; // don't suffix by '/'
+#define TPCC
+#ifdef SYSBENCH
+static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/sbtest"; // don't suffix by '/'
 static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
                                               "sbtest2.ibd",
                                               "sbtest3.ibd",
@@ -57,8 +59,24 @@ static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
                                               "sbtest39.ibd",
                                               "sbtest40.ibd",
 };
+#endif
 
-static constexpr uint32_t PER_LOG_FILE_SIZE = 1024 * 1024 * 1204; // 1G
+#ifdef TPCC
+static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/tpcc"; // don't suffix by '/'
+static constexpr const char * DATA_FILES[] = {
+        "customer.ibd",
+        "district.ibd",
+        "history.ibd",
+        "item.ibd",
+        "new_orders.ibd",
+        "order_line.ibd",
+        "orders.ibd",
+        "stock.ibd",
+        "warehouse.ibd"
+};
+#endif
+
+static constexpr uint32_t PER_LOG_FILE_SIZE = 2UL * 1024 * 1024 * 1204; // 2G
 // log block size in bytes
 static constexpr size_t LOG_BLOCK_SIZE = 512;
 
@@ -235,6 +253,7 @@ static constexpr uint32_t DICT_VIRTUAL = 128;	/* Index on Virtual column */
 /* Precise data types for system columns and the length of those columns;
 NOTE: the values must run from 0 up in the order given! All codes must
 be less than 256 */
+static constexpr uint32_t DATA_MYSQL_TYPE_MASK = 255;
 static constexpr uint32_t DATA_ROW_ID = 0;	/* row id: a 48-bit integer */
 static constexpr uint32_t DATA_ROW_ID_LEN = 6;	/* stored length for row id */
 

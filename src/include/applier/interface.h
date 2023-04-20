@@ -38,7 +38,7 @@ extern void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amoun
  */
 extern void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int iov_count);
 
-extern void copy_page_to_buf(void *dest_buf, uint32_t space_id, uint32_t page_id);
+extern void copy_page_to_buf(char *dest_buf, uint32_t space_id, uint32_t start_page_id, int n_pages);
 #ifdef __cplusplus
 }
 #endif

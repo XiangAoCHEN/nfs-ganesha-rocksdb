@@ -2504,7 +2504,8 @@ struct fsal_obj_ops {
 		       bool bypass,
 		       fsal_async_cb done_cb,
 		       struct fsal_io_arg *read_arg,
-		       void *caller_arg);
+		       void *caller_arg,
+               bool dummy);
 
 /**
  * @brief Write data to a file

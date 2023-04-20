@@ -1224,7 +1224,8 @@ void vfs_read2(struct fsal_obj_handle *obj_hdl,
 	       bool bypass,
 	       fsal_async_cb done_cb,
 	       struct fsal_io_arg *read_arg,
-	       void *caller_arg)
+	       void *caller_arg,
+           bool dummy)
 {
 	int my_fd = -1;
 	ssize_t nb_read;
@@ -1269,8 +1270,15 @@ void vfs_read2(struct fsal_obj_handle *obj_hdl,
 	if (FSAL_IS_ERROR(status))
 		goto out;
 
-	nb_read = preadv(my_fd, read_arg->iov, read_arg->iov_count,
-			 read_arg->offset);
+    if (!dummy) {
+        nb_read = preadv(my_fd, read_arg->iov, read_arg->iov_count,
+                         read_arg->offset);
+    } else {
+        nb_read = 0;
+        for (int i = 0; i < read_arg->iov_count; ++i) {
+            nb_read += read_arg->iov[i].iov_len;
+        }
+    }
 
 	if (read_arg->offset == -1 || nb_read == -1) {
 		retval = errno;

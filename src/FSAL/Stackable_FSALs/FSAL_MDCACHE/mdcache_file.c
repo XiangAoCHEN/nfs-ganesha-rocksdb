@@ -605,7 +605,8 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
 		   bool bypass,
 		   fsal_async_cb done_cb,
 		   struct fsal_io_arg *read_arg,
-		   void *caller_arg)
+		   void *caller_arg,
+           bool dummy)
 {
     int space_id = is_ibd_file_in_handle(obj_hdl);
     if (space_id >= 0) {
@@ -615,6 +616,19 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
             io_amount += read_arg->iov[i].iov_len;
         }
         wait_until_apply_done(space_id, read_arg->offset, io_amount);
+        char *buf = malloc(io_amount);
+#define DATA_PAGE_SIZE 16384
+        copy_page_to_buf(buf, space_id, read_arg->offset / DATA_PAGE_SIZE, io_amount / DATA_PAGE_SIZE);
+        char *written_ptr = buf;
+        for (int i = 0; i < read_arg->iov_count; ++i) {
+            memcpy(read_arg->iov[i].iov_base, written_ptr, read_arg->iov[i].iov_len);
+            written_ptr += read_arg->iov[i].iov_len;
+        }
+        free(buf);
+        read_arg->io_amount = io_amount;
+        read_arg->end_of_file = false;
+#undef DATA_PAGE_SIZE
+//        return;
     }
 	mdcache_entry_t *entry =
 		container_of(obj_hdl, mdcache_entry_t, obj_handle);
@@ -628,7 +642,7 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
 
 	subcall(
 		entry->sub_handle->obj_ops->read2(entry->sub_handle, bypass,
-						 mdc_read_cb, read_arg, arg)
+						 mdc_read_cb, read_arg, arg, space_id >= 0)
 	       );
 
 //    if (space_id >= 0) {

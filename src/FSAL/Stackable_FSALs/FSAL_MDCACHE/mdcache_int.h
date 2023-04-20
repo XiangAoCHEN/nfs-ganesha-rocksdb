@@ -1066,7 +1066,8 @@ void mdcache_read2(struct fsal_obj_handle *obj_hdl,
 		   bool bypass,
 		   fsal_async_cb done_cb,
 		   struct fsal_io_arg *read_arg,
-		   void *caller_arg);
+		   void *caller_arg,
+           bool dummy);
 void mdcache_write2(struct fsal_obj_handle *obj_hdl,
 		    bool bypass,
 		    fsal_async_cb done_cb,

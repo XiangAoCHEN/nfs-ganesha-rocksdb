@@ -109,7 +109,40 @@ void* log_parse_thread_routine(void*) {
             auto log_entry = LogEntry(type, space_id, page_id, log_parser.parsed_lsn, len, log_body_ptr, start_ptr + len);
 //            LogEvent(COMPONENT_FSAL, "log parser parse log type=%s, space id=%d, page id=%d, lsn=%zu, len=%d", GetLogString(type), space_id, page_id, log_parser.parsed_lsn, len);
             // 将日志加入索引
-            apply_index.InsertBack(std::move(log_entry));
+            if (DataPageGroup::Get().Exist(space_id)) {
+                if (type != MLOG_FILE_NAME
+                    && type != MLOG_FILE_DELETE
+                    && type != MLOG_FILE_CREATE2
+                    && type != MLOG_FILE_RENAME2
+                    && type != MLOG_SINGLE_REC_FLAG
+                    && type != MLOG_MULTI_REC_END
+                    && type != MLOG_DUMMY_RECORD
+                    && type != MLOG_CHECKPOINT
+                    && type != MLOG_TRUNCATE
+                    && type != MLOG_INDEX_LOAD) {
+                    apply_index.InsertBack(std::move(log_entry));
+                    assert(type == MLOG_1BYTE
+                           || type == MLOG_2BYTES
+                           || type == MLOG_4BYTES
+                           || type == MLOG_8BYTES
+                           || type == MLOG_WRITE_STRING
+                           || type == MLOG_COMP_PAGE_CREATE
+                           || type == MLOG_INIT_FILE_PAGE2
+                           || type == MLOG_COMP_REC_INSERT
+                           || type == MLOG_COMP_REC_CLUST_DELETE_MARK
+                           || type == MLOG_REC_SEC_DELETE_MARK
+                           || type == MLOG_COMP_REC_SEC_DELETE_MARK
+                           || type == MLOG_COMP_REC_UPDATE_IN_PLACE
+                           || type == MLOG_COMP_REC_DELETE
+                           || type == MLOG_COMP_LIST_END_COPY_CREATED
+                           || type == MLOG_COMP_PAGE_REORGANIZE
+                           || type == MLOG_COMP_LIST_START_DELETE
+                           || type == MLOG_COMP_LIST_END_DELETE
+                           || type == MLOG_IBUF_BITMAP_INIT);
+                }
+
+            }
+
             log_group.parsed_isn += len;
             log_group.parsed_offset = (log_group.parsed_offset + len) % log_group.log_buf_size;
             log_group.need_to_parse -= len;
@@ -222,7 +255,7 @@ byte* ParseOrApplyNBytes(LOG_TYPE type, const byte* log_body_start_ptr, const by
     log_body_start_ptr += 2;
 
     if (offset >= DATA_PAGE_SIZE) {
-        return nullptr;
+        assert(false); // log 损坏
     }
 
     if (type == MLOG_8BYTES) {
@@ -249,6 +282,7 @@ byte* ParseOrApplyNBytes(LOG_TYPE type, const byte* log_body_start_ptr, const by
             // 日志损坏
             if (val > 0xFFUL) {
                 log_body_start_ptr = nullptr;
+                assert(false);
             }
             // 对MLOG_1BYTES类型的日志进行Apply
             if (page) {
@@ -259,6 +293,7 @@ byte* ParseOrApplyNBytes(LOG_TYPE type, const byte* log_body_start_ptr, const by
             // 日志损坏
             if (val > 0xFFFFUL) {
                 log_body_start_ptr = nullptr;
+                assert(false);
             }
             // 对MLOG_2BYTES类型的日志进行Apply
             if (page) {
@@ -973,7 +1008,8 @@ byte* ApplyCompPageCreate(byte* page) {
  * Apply MLOG_INIT_FILE_PAGE2
  */
 bool ApplyInitFilePage2(const LogEntry &log, Page *page) {
-    if (page == nullptr || page->GetData()) {
+    if (page == nullptr || page->GetData() == nullptr) {
+        assert(false);
         return false;
     }
     byte *page_data = page->GetData();
@@ -997,6 +1033,7 @@ static byte* ParseRecInfoFromLog(const byte *ptr, const byte *end_ptr, RecordInf
     uint32_t n = 0, n_uniq = 0;
     if (comp) {
         if (end_ptr < ptr + 4) {
+            assert(false);
             return nullptr;
         }
         // 解析出要log中有多少field
@@ -1012,6 +1049,7 @@ static byte* ParseRecInfoFromLog(const byte *ptr, const byte *end_ptr, RecordInf
 
         assert(n_uniq <= n);
         if (end_ptr < ptr + n * 2) {
+            assert(false);
             return nullptr;
         }
     } else {
@@ -1738,7 +1776,7 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
     ptr = ParseRecInfoFromLog(ptr, end_ptr, inserted_rec_info, true);
 
     if (ptr == nullptr) {
-        return false;
+        assert(false);
     }
     uint32_t origin_offset = 0;
     uint32_t mismatch_index = 0;
@@ -1764,13 +1802,14 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
 
     if (end_seg_len >= DATA_PAGE_SIZE << 1) {
         // 到这说明这条log损坏了
-        return false;
+        assert(false);
     }
 
     if (end_seg_len & 0x1UL) {
         /* Read the info bits */
 
         if (end_ptr < ptr + 1) {
+            assert(false);
             return false;
         }
 
@@ -1782,6 +1821,7 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
         origin_offset = mach_parse_compressed(&ptr, end_ptr);
 
         if (ptr == nullptr) {
+            assert(false);
             return false;
         }
 
@@ -1791,6 +1831,7 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
         mismatch_index = mach_parse_compressed(&ptr, end_ptr);
 
         if (ptr == nullptr) {
+            assert(false);
             return false;
         }
 
@@ -1798,6 +1839,7 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
     }
 
     if (end_ptr < ptr + (end_seg_len >> 1)) {
+        assert(false);
         return false;
     }
 
@@ -1821,6 +1863,8 @@ bool ApplyCompRecInsert(const LogEntry &log, Page *page) {
     } else {
         buf = static_cast<byte*>(malloc(mismatch_index + end_seg_len));
     }
+
+    assert(mismatch_index < DATA_PAGE_SIZE);
 
     /* Build the inserted record to buf */
     std::memcpy(buf, cursor_rec - pre_rec_info.GetExtraSize(), mismatch_index);
@@ -2596,7 +2640,6 @@ bool ApplyCompPageReorganize(const LogEntry &log, Page *page) {
         /* Copy max trx id to recreated page */
         trx_id_t max_trx_id = page_get_max_trx_id(temp_page_ptr);
         page_set_max_trx_id(page_ptr, max_trx_id);
-        assert(max_trx_id != 0);
     }
 
 
@@ -2958,6 +3001,7 @@ static byte* ParseSingleLogRecordBody(LOG_TYPE	type,
             return PARSE_MLOG_FILE_X(ptr, end_ptr, space_id, page_id, type);
         case MLOG_INDEX_LOAD:
             if (end_ptr < ptr + 8) {
+                assert(false); // 损坏的日志
                 return nullptr;
             }
             return ptr + 8;

@@ -1382,7 +1382,8 @@ static void read2(struct fsal_obj_handle *obj_hdl,
 		  bool bypass,
 		  fsal_async_cb done_cb,
 		  struct fsal_io_arg *read_arg,
-		  void *caller_arg)
+		  void *caller_arg,
+          bool dummy)
 {
 	LogCrit(COMPONENT_FSAL,
 		"Invoking unsupported FSAL operation");

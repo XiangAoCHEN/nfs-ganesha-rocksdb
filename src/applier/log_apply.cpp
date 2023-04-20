@@ -46,9 +46,11 @@ static bool log_apply_apply_one_log(Page *page, const LogEntry &log) {
         case MLOG_4BYTES:
         case MLOG_8BYTES:
             ret = ParseOrApplyNBytes(log.type_, log.log_body_start_ptr_, log.log_body_end_ptr_, page->GetData());
+            assert(ret != nullptr);
             return ret != nullptr;
         case MLOG_WRITE_STRING:
             ret = ParseOrApplyString(log.log_body_start_ptr_, log.log_body_end_ptr_, page->GetData());
+            assert(ret != nullptr);
             return ret != nullptr;
         case MLOG_COMP_PAGE_CREATE:
             ret = ApplyCompPageCreate(page->GetData());
@@ -101,9 +103,13 @@ void log_apply_do_apply(const PageAddress &page_address, std::list<LogEntry> *lo
     lsn_t page_lsn = page->GetLSN();
     for (const auto &log: (*log_entry_list)) {
         lsn_t log_lsn = log.log_start_lsn_;
+        std::cout << "space id = " << space_id << ", page id = " << page_id << ", log type = " << GetLogString(log.type_);
         // skip!
         if (page_lsn > log_lsn) {
+            std::cout << "skip" << std::endl;
             continue;
+        } else {
+            std::cout << std::endl;
         }
 
         if (log_apply_apply_one_log(page, log)) {
