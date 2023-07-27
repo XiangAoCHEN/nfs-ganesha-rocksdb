@@ -103,13 +103,13 @@ void log_apply_do_apply(const PageAddress &page_address, std::list<LogEntry> *lo
     lsn_t page_lsn = page->GetLSN();
     for (const auto &log: (*log_entry_list)) {
         lsn_t log_lsn = log.log_start_lsn_;
-        std::cout << "space id = " << space_id << ", page id = " << page_id << ", log type = " << GetLogString(log.type_);
+//        std::cout << "space id = " << space_id << ", page id = " << page_id << ", log type = " << GetLogString(log.type_);
         // skip!
         if (page_lsn > log_lsn) {
-            std::cout << "skip" << std::endl;
+//            std::cout << "skip" << std::endl;
             continue;
         } else {
-            std::cout << std::endl;
+//            std::cout << std::endl;
         }
 
         if (log_apply_apply_one_log(page, log)) {
@@ -118,6 +118,7 @@ void log_apply_do_apply(const PageAddress &page_address, std::list<LogEntry> *lo
         }
     }
     buffer_pool.WriteBackLock(space_id, page_id);
+    BufferPool::ReleasePage(page);
 }
 
 static void log_apply_worker_work(int worker_index) {
