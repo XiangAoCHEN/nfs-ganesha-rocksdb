@@ -20,6 +20,7 @@ Page::~Page() {
 void Page::WriteCheckSum(uint32_t checksum) {
     mach_write_to_4(data_ + FIL_PAGE_SPACE_OR_CHKSUM, checksum);
     mach_write_to_4(data_ + DATA_PAGE_SIZE - FIL_PAGE_END_LSN_OLD_CHKSUM, checksum);
+    dirty_ = true;
 }
 
 Page::Page(const Page &other) :
@@ -104,7 +105,9 @@ Page *BufferPool::NewPage(space_id_t space_id, page_id_t page_id) {
     frame_id_2_page_address_[frame_id].space_id_ = space_id;
     frame_id_2_page_address_[frame_id].page_id_ = page_id;
 
-    return &buffer_[frame_id];
+    auto *page = &buffer_[frame_id];
+    page->PageLock();
+    return page;
 }
 
 void BufferPool::Evict(int n) {
@@ -116,7 +119,12 @@ void BufferPool::Evict(int n) {
         page_id_t page_id = frame_id_2_page_address_[frame_id].page_id_;
 
         // 写回
-        WriteBack(space_id, page_id);
+        Page &page = buffer_[frame_id];
+        page.PageLock();
+        if (page.dirty_) {
+            WriteBack(space_id, page_id);
+        }
+        page.PageUnLock();
         lru_list_.pop_back();
         assert(frame_id_2_page_address_[frame_id].in_lru_ == true);
         frame_id_2_page_address_[frame_id].in_lru_ = false;
@@ -126,7 +134,7 @@ void BufferPool::Evict(int n) {
         // 把 buffer frame 归还 Free List
         free_list_.push_back(frame_id);
 
-        buffer_[frame_id].SetState(Page::State::INVALID);
+        page.SetState(Page::State::INVALID);
     }
 }
 
@@ -148,7 +156,9 @@ Page *BufferPool::GetPage(space_id_t space_id, page_id_t page_id) {
         lru_list_.emplace_front(frame_id);
         hash_map_[space_id][page_id] = lru_list_.begin();
 
-        return &buffer_[frame_id];
+        auto *page = &buffer_[frame_id];
+        page->PageLock();
+        return page;
     }
 
     // 不在buffer pool中，从磁盘读
@@ -173,6 +183,7 @@ Page *BufferPool::ReadPageFromDisk(space_id_t space_id, page_id_t page_id) {
 
     // 磁盘上还没有这个page
     if (page_id > max_page_id) {
+//        assert(false);
         return nullptr;
     }
 
@@ -189,7 +200,9 @@ Page *BufferPool::ReadPageFromDisk(space_id_t space_id, page_id_t page_id) {
     frame_id_2_page_address_[frame_id].in_lru_ = true;
     lru_list_.emplace_front(frame_id);
     hash_map_[space_id][page_id] = lru_list_.begin();
-    return &buffer_[frame_id];
+    auto *page = &buffer_[frame_id];
+    page->PageLock();
+    return page;
 }
 
 bool BufferPool::WriteBack(space_id_t space_id, page_id_t page_id) {
@@ -197,8 +210,10 @@ bool BufferPool::WriteBack(space_id_t space_id, page_id_t page_id) {
     if (hash_map_.find(space_id) != hash_map_.end() && hash_map_[space_id].find(page_id) != hash_map_[space_id].end()) {
         frame_id_t frame_id = *(hash_map_[space_id][page_id]);
         auto fs = space_id_2_file_name_[space_id].stream_;
+        auto *page_data = buffer_[frame_id].GetData();
+        assert(mach_read_from_4(page_data + FIL_PAGE_OFFSET) == page_id);
         fs->seekp(static_cast<std::streamoff>(page_id * DATA_PAGE_SIZE));
-        fs->write(reinterpret_cast<char *>(buffer_[frame_id].GetData()), DATA_PAGE_SIZE);
+        fs->write(reinterpret_cast<char *>(page_data), DATA_PAGE_SIZE);
         return true;
     }
     return false;
@@ -210,6 +225,8 @@ bool BufferPool::WriteBackLock(space_id_t space_id, page_id_t page_id) {
     if (hash_map_.find(space_id) != hash_map_.end() && hash_map_[space_id].find(page_id) != hash_map_[space_id].end()) {
         frame_id_t frame_id = *(hash_map_[space_id][page_id]);
         auto fs = space_id_2_file_name_[space_id].stream_;
+        auto *page_data = buffer_[frame_id].GetData();
+        assert(mach_read_from_4(page_data + FIL_PAGE_OFFSET) == page_id);
         fs->seekp(static_cast<std::streamoff>(page_id * DATA_PAGE_SIZE));
         fs->write(reinterpret_cast<char *>(buffer_[frame_id].GetData()), DATA_PAGE_SIZE);
         return true;
@@ -220,6 +237,7 @@ bool BufferPool::WriteBackLock(space_id_t space_id, page_id_t page_id) {
 void BufferPool::CopyPage(void *dest_buf, space_id_t space_id, page_id_t page_id) {
     Page *page = GetPage(space_id, page_id);
     std::memcpy(dest_buf, page->data_, DATA_PAGE_SIZE);
+    ReleasePage(page);
 }
 
 BufferPool buffer_pool;

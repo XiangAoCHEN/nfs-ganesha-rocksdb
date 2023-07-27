@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 #include <unordered_map>
 #include <list>
@@ -12,8 +13,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <mutex>
 #include "applier/applier_config.h"
 #include "applier/utility.h"
+
 class PageAddressLru {
 public:
     bool in_lru_; // 该page是否在LRU中
@@ -24,14 +27,17 @@ public:
 class PageReaderWriter {
 public:
     PageReaderWriter() = default;
+
     ~PageReaderWriter() {
         if (stream_.use_count() == 0 && stream_->is_open()) {
             stream_->close();
         }
     };
+
     explicit PageReaderWriter(std::string &file_name)
             : file_name_(file_name),
               stream_(std::make_shared<std::fstream>(file_name_, std::ios::binary | std::ios::out | std::ios::in)) {}
+
     std::string file_name_{};
     std::shared_ptr<std::fstream> stream_{};
 
@@ -49,14 +55,18 @@ public:
         FROM_BUFFER = 1, // 刚从buffer pool中被创建出来
         FROM_DISK = 2, // 从磁盘中读上来的
     };
+
     Page();
 
     // Copy Constructor
     Page(const Page &other);
+
     ~Page();
+
     [[nodiscard]] lsn_t GetLSN() const {
         return mach_read_from_8(data_ + FIL_PAGE_LSN);
     }
+
     [[nodiscard]] uint32_t GetCheckSum() const {
         uint32_t checksum1 = mach_read_from_4(data_ + DATA_PAGE_SIZE - FIL_PAGE_END_LSN_OLD_CHKSUM);
         uint32_t checksum2 = mach_read_from_4(data_ + FIL_PAGE_SPACE_OR_CHKSUM);
@@ -67,9 +77,11 @@ public:
     [[nodiscard]] uint32_t GetPageId() const {
         return mach_read_from_4(data_ + FIL_PAGE_OFFSET);
     }
+
     [[nodiscard]] uint32_t GetSpaceId() const {
         return mach_read_from_4(data_ + FIL_PAGE_ARCH_LOG_NO_OR_SPACE_ID);
     }
+
     void Reset() {
         std::memset(data_, 0, DATA_PAGE_SIZE);
         state_ = State::INVALID;
@@ -81,9 +93,11 @@ public:
     [[nodiscard]] unsigned char *GetData() const {
         return data_;
     }
+
     State GetState() {
         return state_;
     }
+
     void SetState(State state) {
         state_ = state;
     }
@@ -96,24 +110,38 @@ public:
         mach_write_to_8(DATA_PAGE_SIZE
                         - FIL_PAGE_END_LSN_OLD_CHKSUM
                         + data_, lsn);
+        dirty_ = true;
     }
+
+    void PageLock() { mutex_.lock(); }
+
+    void PageUnLock() { mutex_.unlock(); }
+
+    void SetDirty(bool is_dirty) { dirty_ = is_dirty; }
 private:
-    byte *data_;
-    State state_;
+    byte *data_{nullptr};
+    bool dirty_ {false};
+    std::mutex mutex_{};
+    State state_{State::INVALID};
 };
 
 class BufferPool {
 public:
     BufferPool();
+
     ~BufferPool();
+
     // 在buffer pool中新建一个page
     Page *NewPage(space_id_t space_id, page_id_t page_id);
 
     // 从buffer pool中获取一个page，不存在的话从磁盘获取，如果磁盘上也没有，就返回nullptr
     Page *GetPage(space_id_t space_id, page_id_t page_id);
+
+    static void ReleasePage(Page *page) { page->PageUnLock(); }
     bool WriteBack(space_id_t space_id, page_id_t page_id);
 
     bool WriteBackLock(space_id_t space_id, page_id_t page_id);
+
     std::string GetFilename(space_id_t space_id) const {
         try {
             return space_id_2_file_name_.at(space_id).file_name_;
@@ -123,6 +151,7 @@ public:
     }
 
     void CopyPage(void *dest_buf, space_id_t space_id, page_id_t page_id);
+
 private:
     std::list<frame_id_t> lru_list_;
 
@@ -138,6 +167,7 @@ private:
     std::list<frame_id_t> free_list_;
 
     std::vector<PageAddressLru> frame_id_2_page_address_;
+
     // 按照LRU规则淘汰一些页面
     void Evict(int n);
 

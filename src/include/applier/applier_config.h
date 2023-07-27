@@ -15,7 +15,7 @@ static constexpr const char * LOG_PATH_PREFIX = "/home/lemon/mysql/data/";
 static constexpr const char * LOG_FILES_BASE_NAME = "ib_logfile";
 static constexpr int LOG_FILE_NUMBER = 2;
 static constexpr int APPLIER_THREAD = 1;
-#define TPCC
+#define SYSBENCH
 #ifdef SYSBENCH
 static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/sbtest"; // don't suffix by '/'
 static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
@@ -96,7 +96,7 @@ static constexpr lsn_t LOG_START_LSN = 8716;
 
 static constexpr uint32_t N_BLOCKS_IN_A_PAGE = DATA_PAGE_SIZE / LOG_BLOCK_SIZE;
 
-static constexpr uint32_t BUFFER_POOL_SIZE = 8 * 1024; // buffer pool size in data_page_size 128MB
+static constexpr uint32_t BUFFER_POOL_SIZE = 80 * 1024; // buffer pool size in data_page_size 128MB
 
 // redo log 相关的偏移量
 static constexpr uint32_t LOG_BLOCK_HDR_NO = 0;
