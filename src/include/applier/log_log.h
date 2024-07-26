@@ -13,6 +13,15 @@
 #include "applier/bean.h"
 #include "applier/hash_util.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "common_utils.h"
+#include "log.h"
+#ifdef __cplusplus
+}
+#endif
+
 #define START_THREAD(name, thread_id, thread_routine, routine_args)                                              \
 do {                                                                                                             \
     int rc = 0;                                                                                                  \
@@ -188,6 +197,18 @@ public:
             }
             return res;
         }
+
+        size_t getAddrNum(){return index_segment_.size();}
+        size_t getEntryLen(){return total_log_len_;}
+
+        size_t tmp_search(const PageAddress &page_address) {
+            size_t entry_count = 0;
+            for (auto &item: index_segment_) {
+                if (item.first.SpaceId() == page_address.SpaceId() && item.first.SpaceId() == page_address.SpaceId()) {
+                    entry_count += item.second->size();
+                }
+            }
+        }
     private:
         size_t total_log_len_ {0};
         size_t log_len_limit_ {APPLY_BATCH_SIZE}; // 一个index segment最多存储这么长的log
@@ -272,6 +293,18 @@ public:
         }
         return res;
     }
+
+    void print_stats(){
+        PthreadMutexGuard guard(lock_);
+        size_t entry_count = 0;
+        size_t address_count = 0;
+        for (auto &item: index_) {
+            address_count += item->getAddrNum();
+            entry_count += item->getEntryLen();
+        }
+        LogEvent(COMPONENT_FSAL, "## memory list,%zu segments, %zu address, %zu byte log entries", index_.size(), address_count,entry_count);
+    }
+
 private:
     pthread_cond_t index_not_empty_cond_ {};
     pthread_cond_t front_full_cond_ {};
@@ -334,6 +367,11 @@ struct log_group_t {
     uint32_t log_buf_size_per_file; // 每一个log file需要多大的log buf，不包括log 的元数据块还有log block内的header和trail
 
     bool first_written;
+
+    size_t log_header_start_lsn;
+    std::vector<int> log_fds;
+    int sys_tablespace_fd;
+    char sys_first_page_flushed_lsn[8];
 };
 
 extern log_group_t log_group;

@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "nfs-ganesha",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/cmake-build-debug/bin/ganesha.nfsd",
+      "args": [
+        "-F",
+        "-L",
+        "/var/log/nfs-ganesha.log",
+        "-f",
+        "/home/cxa/ganesha.conf",
+        "-N",
+        "NIV_EVENT"
+      ],
+      "cwd": "${workspaceFolder}",
+      "miDebuggerPath": "/home/cxa/nfs-ganesha-v0/launch_with_sudo.sh"
+    }
+  ]
+}

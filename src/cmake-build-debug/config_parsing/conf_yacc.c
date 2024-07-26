@@ -63,7 +63,7 @@
 #define YYPULL 1
 
 /* "%code top" blocks.  */
-#line 24 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 24 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 
 #pragma GCC diagnostic ignored "-Wunused-value"
@@ -82,7 +82,7 @@
 #endif
 
 
-#line 86 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 86 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
 
 /* Substitute the variable and function names.  */
 #define yyparse         ganesha_yyparse
@@ -123,8 +123,8 @@
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
-# define YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
+#ifndef YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
+# define YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -133,13 +133,13 @@
 extern int ganesha_yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 49 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 49 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 /* alert the parser that we have our own definition */
 # define YYLTYPE_IS_DECLARED 1
 
 
-#line 143 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 143 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -179,12 +179,12 @@ extern int ganesha_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 55 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 55 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
   char *token;
   struct config_node *node;
 
-#line 188 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 188 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -210,7 +210,7 @@ struct YYLTYPE
 
 int ganesha_yyparse (struct parser_state *st);
 /* "%code provides" blocks.  */
-#line 60 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 60 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 
 typedef struct YYLTYPE {
@@ -281,9 +281,9 @@ struct config_node *config_term(char *opcode,
 				struct parser_state *st);
 
 
-#line 285 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 285 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
 
-#endif /* !YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED  */
+#endif /* !YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED  */
 
 
 
@@ -1579,293 +1579,293 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 170 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 170 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 { /* empty */
   config_parse_error(&yyloc, st, "Empty configuration file");
 }
-#line 1587 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1587 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 3:
-#line 174 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 174 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   if ((yyvsp[0].node) != NULL)
     glist_add_tail(&((yyvsp[0].node))->node, &st->root_node->root.u.nterm.sub_nodes);
   link_node(&st->root_node->root);
 }
-#line 1597 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1597 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 4:
-#line 184 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 184 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = (yyvsp[0].node);
 }
-#line 1605 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1605 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 5:
-#line 188 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 188 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = link_sibling((yyvsp[-1].node), (yyvsp[0].node));
 }
-#line 1613 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1613 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 6:
-#line 197 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 197 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_stmt((yyvsp[-2].token), (yyvsp[0].node), &(yyloc), st);
 }
-#line 1621 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1621 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 7:
-#line 201 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 201 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node)=config_block((yyvsp[-2].token), (yyvsp[0].node), &(yyloc), st);
 }
-#line 1629 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1629 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 8:
-#line 208 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 208 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = (yyvsp[-1].node);
 }
-#line 1637 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1637 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 9:
-#line 212 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 212 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   config_parse_error(&(yyloc), st, "Syntax error in statement");
   yyerrok;
   (yyval.node) = NULL;
 }
-#line 1647 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1647 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 10:
-#line 221 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 221 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 { /* empty */
   (yyval.node) = NULL;
 }
-#line 1655 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1655 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 11:
-#line 225 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 225 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = (yyvsp[-1].node);
 }
-#line 1663 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1663 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 12:
-#line 229 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 229 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   config_parse_error(&(yyloc), st, "Syntax error in block");
   yyerrok;
   (yyval.node) = NULL;
 }
-#line 1673 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1673 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 13:
-#line 240 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 240 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 { /* empty */
   (yyval.node) = NULL;
 }
-#line 1681 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1681 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 14:
-#line 244 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 244 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = (yyvsp[0].node);
 }
-#line 1689 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1689 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 15:
-#line 248 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 248 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = link_sibling((yyvsp[-2].node), (yyvsp[0].node));
 }
-#line 1697 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1697 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 16:
-#line 255 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 255 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_PATH, &(yyloc), st);
 }
-#line 1705 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1705 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 17:
-#line 259 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 259 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_TOKEN, &(yyloc), st);
 }
-#line 1713 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1713 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 18:
-#line 263 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 263 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_REGEX, &(yyloc), st);
 }
-#line 1721 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1721 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 19:
-#line 267 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 267 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_STRING, &(yyloc), st);
 }
-#line 1729 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1729 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 20:
-#line 271 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 271 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_DQUOTE, &(yyloc), st);
 }
-#line 1737 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1737 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 21:
-#line 275 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 275 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_SQUOTE, &(yyloc), st);
 }
-#line 1745 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1745 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 22:
-#line 279 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 279 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_TRUE, &(yyloc), st);
 }
-#line 1753 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1753 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 23:
-#line 283 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 283 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_FALSE, &(yyloc), st);
 }
-#line 1761 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1761 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 24:
-#line 287 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 287 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_OCTNUM, &(yyloc), st);
 }
-#line 1769 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1769 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 25:
-#line 291 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 291 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_HEXNUM, &(yyloc), st);
 }
-#line 1777 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1777 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 26:
-#line 295 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 295 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_DECNUM, &(yyloc), st);
 }
-#line 1785 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1785 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 27:
-#line 299 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 299 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term((yyvsp[-1].token), (yyvsp[0].token), TERM_OCTNUM, &(yyloc), st);
 }
-#line 1793 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1793 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 28:
-#line 303 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 303 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term((yyvsp[-1].token), (yyvsp[0].token), TERM_HEXNUM, &(yyloc), st);
 }
-#line 1801 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1801 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 29:
-#line 307 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 307 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term((yyvsp[-1].token), (yyvsp[0].token), TERM_DECNUM, &(yyloc), st);
 }
-#line 1809 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1809 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 30:
-#line 311 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 311 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_V4_ANY, &(yyloc), st);
 }
-#line 1817 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1817 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 31:
-#line 315 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 315 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_V4ADDR, &(yyloc), st);
 }
-#line 1825 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1825 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 32:
-#line 319 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 319 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_V4CIDR, &(yyloc), st);
 }
-#line 1833 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1833 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 33:
-#line 323 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 323 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_V6ADDR, &(yyloc), st);
 }
-#line 1841 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1841 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 34:
-#line 327 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 327 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_V6CIDR, &(yyloc), st);
 }
-#line 1849 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1849 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 35:
-#line 331 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 331 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_FSID, &(yyloc), st);
 }
-#line 1857 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1857 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
   case 36:
-#line 335 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 335 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 {
   (yyval.node) = config_term(NULL, (yyvsp[0].token), TERM_NETGROUP, &(yyloc), st);
 }
-#line 1865 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1865 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
     break;
 
 
-#line 1869 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.c"
+#line 1869 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.c"
 
       default: break;
     }
@@ -2103,7 +2103,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 340 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 340 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 
   /**

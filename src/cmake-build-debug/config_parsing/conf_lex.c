@@ -1,6 +1,6 @@
-#line 2 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 2 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 
-#line 4 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 4 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1583,7 +1583,7 @@ static const flex_int32_t yy_rule_can_match_eol[39] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 1 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 /* ----------------------------------------------------------------------------
  * Copyright CEA/DAM/DIF  (2007)
@@ -1606,7 +1606,7 @@ static const flex_int32_t yy_rule_can_match_eol[39] =
  *
  * ---------------------------------------
  */
-#line 25 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 25 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 
 #pragma GCC diagnostic ignored "-Wunused-value"
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -1671,11 +1671,11 @@ static int process_dir(char *d_name, struct parser_state *st);
 static int fetch_url(char *name_tok, struct parser_state *st);
 static int pop_file(struct parser_state *st);
 
-#line 1675 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 1675 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 /* URL types, e.g., (rados|http|ftp) */
 /* INCLUDE state is used for picking the name of the include file */
 
-#line 1679 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 1679 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 
 #define INITIAL 0
 #define YY_INIT 1
@@ -1961,14 +1961,14 @@ YY_DECL
 		}
 
 	{
-#line 155 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 155 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 
 
-#line 158 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 158 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 	struct parser_state *stp = yyextra;
 
 
-#line 1972 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 1972 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2039,7 +2039,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 161 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 161 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* include file start */
 	DEBUG_LEX("INCLUDE\n");
 	BEGIN INCLUDE;
@@ -2048,7 +2048,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 167 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 167 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 
 	{
@@ -2065,7 +2065,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 181 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 181 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 	{
 		int c;
@@ -2081,7 +2081,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 194 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 194 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* include file start */
         DEBUG_LEX("INCL_DIR\n");
         BEGIN INCL_DIR;
@@ -2090,7 +2090,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 200 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 200 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
         {
                 int rc;
@@ -2107,7 +2107,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 214 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 214 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
         {
                 int rc;
@@ -2124,7 +2124,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 228 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 228 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* URL include file start */
 	DEBUG_LEX("URL\n");
 	BEGIN URL;
@@ -2133,7 +2133,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 234 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 234 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 
 	{
@@ -2150,7 +2150,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 248 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 248 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 	{
 		int c;
@@ -2171,7 +2171,7 @@ case YY_STATE_EOF(TERM):
 case YY_STATE_EOF(INCLUDE):
 case YY_STATE_EOF(URL):
 case YY_STATE_EOF(INCL_DIR):
-#line 261 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 261 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* end of included file */
 	DEBUG_LEX("<EOF>\n");
 	if (pop_file(stp) == 0)
@@ -2181,7 +2181,7 @@ case YY_STATE_EOF(INCL_DIR):
 /* Initial State.  We start with a block identifier */
 case 10:
 YY_RULE_SETUP
-#line 269 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 269 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* first block */
 	/* identifier */
 	DEBUG_LEX("[block:%s]\n",yytext);
@@ -2192,7 +2192,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 277 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 277 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 	DEBUG_LEX("[id:%s",yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2201,7 +2201,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 283 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 283 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 	DEBUG_LEX(" EQUALS ");
 	BEGIN TERM;
@@ -2210,7 +2210,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 289 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 289 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {
 	DEBUG_LEX("BEGIN_BLOCK\n");
 	BEGIN DEFINITION;
@@ -2220,7 +2220,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 296 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 296 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {   /* end of block */
 	DEBUG_LEX("END_BLOCK\n");
 	stp->block_depth --;
@@ -2231,7 +2231,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 304 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 304 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* another terminal to follow ',' */
 	DEBUG_LEX(" ',' ");
 	return COMMA_OP;
@@ -2240,7 +2240,7 @@ YY_RULE_SETUP
 /* End of statement */
 case 16:
 YY_RULE_SETUP
-#line 311 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 311 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* end of statement */
 	DEBUG_LEX("]\n");
 	BEGIN DEFINITION;
@@ -2251,7 +2251,7 @@ YY_RULE_SETUP
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 320 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 320 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 {  /* start of a double quote string */
 	DEBUG_LEX("quote value:<%s>", yytext);
 	yylval->token = save_token(yytext, true, stp);
@@ -2262,7 +2262,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 328 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 328 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* start of a single quote string */
 	DEBUG_LEX("lit value:<%s>", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2271,7 +2271,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 334 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 334 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a boolean TRUE */
 	DEBUG_LEX("boolean TRUE:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2280,7 +2280,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 340 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 340 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a boolean FALSE */
 	DEBUG_LEX("boolean FALSE:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2289,7 +2289,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 346 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 346 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* an arithmetic op */
 	DEBUG_LEX(" arith op:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2298,7 +2298,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 352 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 352 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* "9P" is here to take precedence over numbers, this is a special */
 	DEBUG_LEX("token value:%s",yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2307,7 +2307,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 358 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 358 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* an FSID */
 	DEBUG_LEX(" FSID :%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2316,7 +2316,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 364 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 364 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* an octal number */
 	DEBUG_LEX(" octal number:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2325,7 +2325,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 370 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 370 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a hexadecimal number */
 	DEBUG_LEX(" hex number:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2334,7 +2334,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 376 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 376 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a decimal number */
 	DEBUG_LEX(" dec number:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2343,7 +2343,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 382 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 382 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* v4 address wildcard, ganesha only, not IETF */
 	DEBUG_LEX(" V4 any:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2352,7 +2352,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 388 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 388 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* V4 CIDR */
 	DEBUG_LEX(" IPv4 :%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2366,7 +2366,7 @@ YY_RULE_SETUP
 /* I got it from the Flex manual. */
 case 29:
 YY_RULE_SETUP
-#line 400 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 400 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* V6 CIDR */
 	DEBUG_LEX(" IPv6 :%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2378,7 +2378,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 409 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 409 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a netgroup used for clients */
 	DEBUG_LEX(" netgroup :%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2390,7 +2390,7 @@ YY_RULE_SETUP
 /* TOKEN_CHARS gobbles anything other than white and ";" */
 case 31:
 YY_RULE_SETUP
-#line 419 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 419 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* a POSIX pathname */
 	DEBUG_LEX("pathname:%s", yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2399,7 +2399,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 425 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 425 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* start of a number or label/tag */
 	DEBUG_LEX("token value:%s",yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2408,7 +2408,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 431 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 431 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* start of a number or label/tag as glob(7) string */
 	DEBUG_LEX("token value:%s",yytext);
 	yylval->token = save_token(yytext, false, stp);
@@ -2421,24 +2421,24 @@ case 34:
 yyg->yy_c_buf_p = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 439 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 439 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 ;/* ignore */
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 440 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 440 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 ;/* ignore */
 	YY_BREAK
 case 36:
 /* rule 36 can match eol */
 YY_RULE_SETUP
-#line 441 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 441 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 ;/* ignore */
 	YY_BREAK
 /* Unrecognized chars.  Must do better... */
 case 37:
 YY_RULE_SETUP
-#line 445 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 445 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 { /* ERROR: out of character character */
 	DEBUG_LEX("unexpected stuff (%s)\n", yytext);
 	config_parse_error(yylloc, stp,
@@ -2450,10 +2450,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 454 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 454 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 ECHO;
 	YY_BREAK
-#line 2457 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_lex.c"
+#line 2457 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_lex.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3613,7 +3613,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 454 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_lex.l"
+#line 454 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_lex.l"
 
 
 int ganeshun_yywrap(void *yyscanner){

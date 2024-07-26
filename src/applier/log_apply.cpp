@@ -131,10 +131,14 @@ static void log_apply_worker_work(int worker_index) {
 
     // do apply
     for (const auto &page_address: log_appliers[worker_index].logs) {
-        auto log_entry_list = apply_index.ExtractFront(page_address);
+        auto log_entry_list = apply_index.ExtractFront(page_address);//== background apply, read logs of one page
         if (log_entry_list == nullptr) {
             // 这条log可能已经被其它的data page reader线程抽走了
             continue;
+        }
+
+        if(DataPageGroup::Get().Exist(page_address.SpaceId()) && log_entry_list->size()!=0){
+            LogEvent(COMPONENT_FSAL, "## background apply, log_entry_list.size() = %d\n", log_entry_list->size());
         }
         log_apply_do_apply(page_address, log_entry_list.get());
     }

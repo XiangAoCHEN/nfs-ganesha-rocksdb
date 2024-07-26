@@ -23,7 +23,7 @@ void init_applier_module(void) {
     PTHREAD_COND_init(&log_apply_condition, NULL);
 
 
-    std::vector<int> fds;
+
     // init log group
     log_group.log_file_number = LOG_FILE_NUMBER;
     for (int i = 0; i < log_group.log_file_number; ++i) {
@@ -35,9 +35,9 @@ void init_applier_module(void) {
         std::string full_path = LOG_PATH_PREFIX;
         full_path += filename;
         log_group.log_file_full_paths.push_back(full_path);
-        int fd = open(full_path.c_str(), O_RDONLY);
+        int fd = open(full_path.c_str(), O_RDWR);
         assert(fd > 0);
-        fds.push_back(fd);
+        log_group.log_fds.push_back(fd);
         if (i == 0) {
             log_group.per_file_size = lseek(fd, 0, SEEK_END);
             assert(log_group.per_file_size != 0);
@@ -45,6 +45,8 @@ void init_applier_module(void) {
         assert(log_group.per_file_size == lseek(fd, 0, SEEK_END));// 保证所有的log file是一样大小的
     }
 
+    log_group.sys_tablespace_fd = open(SYS_TABLE_FILE, O_RDWR);
+    assert(log_group.sys_tablespace_fd > 0);
     log_group.batch_size = APPLY_BATCH_SIZE;
 
     // APPLY_BATCH_SIZE必须能被log_group.per_file_size整除
@@ -88,7 +90,7 @@ void init_applier_module(void) {
     }
 
     // 填充 log meta buf
-    auto res = pread(fds[0],
+    auto res = pread(log_group.log_fds[0],
                      (void *)(log_group.log_meta_buf),
                      log_group.log_meta_buf_size,
                      0);
@@ -96,6 +98,8 @@ void init_applier_module(void) {
         LogFatal(COMPONENT_INIT, "start nfs-ganesha failed, %s", strerror(errno));
     }
 
+    log_group.log_header_start_lsn = mach_read_from_8(log_group.log_meta_buf + LOG_HEADER_START_LSN);
+    LogEvent(COMPONENT_INIT, "LOG_HEADER_START_LSN %zu", log_group.log_header_start_lsn);
     size_t checkpoint_no;
     size_t checkpoint_offset;
     size_t checkpoint_lsn;
@@ -117,7 +121,7 @@ void init_applier_module(void) {
     auto off_in_block = off_in_file % LOG_BLOCK_SIZE;
     unsigned char log_block_buf[LOG_BLOCK_SIZE];
 
-    res = pread(fds[n_file],
+    res = pread(log_group.log_fds[n_file],
                 (void *)(log_block_buf),
                 LOG_BLOCK_SIZE,
                 n_block * LOG_BLOCK_SIZE);
@@ -137,13 +141,6 @@ void init_applier_module(void) {
     log_group.written_capacity = log_group.log_buf_size;
 
     log_group.written_capacity = log_group.log_file_number * log_group.per_file_size;
-
-    for (int i = 0; i < log_group.log_file_number; ++i) {
-        // 关闭 log file
-        res = close(fds[i]);
-        assert(res == 0);
-    }
-
 
     log_parse_thread_start();
     log_apply_thread_start(APPLIER_THREAD);
@@ -228,6 +225,7 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
     auto blocks = total_len / LOG_BLOCK_SIZE;
     size_t actual_len = 0; // 掐头去尾之后，真正需要写log buf中的长度
     size_t log_group_offset = log_file_index * log_group.per_file_size + offset;
+    size_t data_offsets = 0;
     for (auto [buf, i] = std::pair<unsigned char *, int>(dest_buf, 0);
             i < blocks;
             ++i, buf += LOG_BLOCK_SIZE) {
@@ -235,6 +233,7 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
         if (data_len == 0) {
             break;
         }
+        data_offsets += data_len;
         // FIXME 切换日志的时候，会写meta block，一次io是4k为单位，meta block是2k，为什么meta block之后的block的data_len是0？
         assert(data_len >= LOG_BLOCK_HDR_SIZE);
         assert(data_len == 512 || data_len < LOG_BLOCK_SIZE - LOG_BLOCK_TRL_SIZE);
@@ -310,6 +309,20 @@ void copy_log_to_buf(int log_file_index, size_t offset, struct iovec iov[], int 
         log_group.written_isn += actual_len;
         pthread_cond_signal(&log_parse_condition);
         PTHREAD_MUTEX_unlock(&log_group_mutex);
+
+        size_t new_checkpoint_offset = data_offsets + offset;
+        size_t new_checkpoint_lsn = log_group.log_header_start_lsn + new_checkpoint_offset - 2048;
+        size_t new_checkpoint_no = 100;
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_1, new_checkpoint_no);
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_1 + LOG_CHECKPOINT_LSN, new_checkpoint_lsn);
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_1 + LOG_CHECKPOINT_OFFSET, new_checkpoint_offset);
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_2, new_checkpoint_no);
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_2 + LOG_CHECKPOINT_LSN, new_checkpoint_lsn);
+        mach_write_to_8(log_group.log_meta_buf + LOG_CHECKPOINT_2 + LOG_CHECKPOINT_OFFSET, new_checkpoint_offset);
+        mach_write_to_8(log_group.sys_first_page_flushed_lsn, new_checkpoint_lsn);
+        pwrite(log_group.log_fds[0], log_group.log_meta_buf + LOG_CHECKPOINT_1, 24, LOG_CHECKPOINT_1);
+        pwrite(log_group.log_fds[0], log_group.log_meta_buf + LOG_CHECKPOINT_2, 24, LOG_CHECKPOINT_2);
+        pwrite(log_group.sys_tablespace_fd, log_group.sys_first_page_flushed_lsn, 8, FIL_PAGE_FILE_FLUSH_LSN);
     }
 }
 
@@ -328,7 +341,7 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
 
 //     主动提取相关的log进行apply
 //        LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, page_id = %u", space_id, page_id);
-        auto log_vector = apply_index.Search(page_address);
+        auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
 //        int count = 0;
         for (const auto &item: log_vector) {
             log_apply_do_apply(page_address, item.get());

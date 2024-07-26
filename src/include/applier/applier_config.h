@@ -11,13 +11,14 @@ using trx_id_t = uint64_t;
 using roll_ptr_t = uint64_t;
 
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
-static constexpr const char * LOG_PATH_PREFIX = "/home/lemon/mysql/data/";
+static constexpr const char * LOG_PATH_PREFIX = "/home/cxa/nfs_server/data/";
+static constexpr const char * SYS_TABLE_FILE = "/home/cxa/nfs_server/data/ibdata1";
 static constexpr const char * LOG_FILES_BASE_NAME = "ib_logfile";
 static constexpr int LOG_FILE_NUMBER = 2;
 static constexpr int APPLIER_THREAD = 1;
 #define SYSBENCH
 #ifdef SYSBENCH
-static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/sbtest"; // don't suffix by '/'
+static constexpr const char * DATA_FILE_PREFIX = "/home/cxa/nfs_server/data/sbtest"; // don't suffix by '/'
 static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
                                               "sbtest2.ibd",
                                               "sbtest3.ibd",
@@ -62,7 +63,7 @@ static constexpr const char * DATA_FILES[] = {"sbtest1.ibd",
 #endif
 
 #ifdef TPCC
-static constexpr const char * DATA_FILE_PREFIX = "/home/lemon/mysql/data/tpcc"; // don't suffix by '/'
+static constexpr const char * DATA_FILE_PREFIX = "/home/cxa/nfs_server/data/tpcc"; // don't suffix by '/'
 static constexpr const char * DATA_FILES[] = {
         "customer.ibd",
         "district.ibd",
@@ -134,7 +135,7 @@ static constexpr unsigned char infimum_supremum_compact[] = {
 };
 
 static constexpr uint32_t SIZE_OF_MLOG_CHECKPOINT = 9;
-
+static constexpr uint32_t FIL_PAGE_FILE_FLUSH_LSN = 26;
 // undo log相关的常量
 static constexpr uint32_t TRX_UNDO_PAGE_HDR = 38U;
 static constexpr uint32_t	TRX_UNDO_PAGE_TYPE = 0;
@@ -156,9 +157,6 @@ static constexpr uint32_t TRX_UNDO_TO_PURGE = 4;
 static constexpr uint32_t	TRX_UNDO_PREPARED = 5;
 
 static constexpr uint32_t TRX_UNDO_LOG_OLD_HDR_SIZE = 34 + 2 * 6;
-
-
-
 static constexpr uint32_t REC_OLD_INFO_BITS = 6;
 static constexpr uint32_t REC_NEW_INFO_BITS = 5;
 static constexpr uint32_t REC_INFO_BITS_MASK = 0xF0UL;

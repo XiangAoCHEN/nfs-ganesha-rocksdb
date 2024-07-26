@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
-# define YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
+#ifndef YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
+# define YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -44,13 +44,13 @@
 extern int ganesha_yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 49 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 49 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 /* alert the parser that we have our own definition */
 # define YYLTYPE_IS_DECLARED 1
 
 
-#line 54 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.h"
+#line 54 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -90,12 +90,12 @@ extern int ganesha_yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 55 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 55 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
   char *token;
   struct config_node *node;
 
-#line 99 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.h"
+#line 99 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -121,7 +121,7 @@ struct YYLTYPE
 
 int ganesha_yyparse (struct parser_state *st);
 /* "%code provides" blocks.  */
-#line 60 "/home/lemon/code/nfs-ganesha/src/config_parsing/conf_yacc.y"
+#line 60 "/home/cxa/nfs-ganesha-v0/src/config_parsing/conf_yacc.y"
 
 
 typedef struct YYLTYPE {
@@ -192,6 +192,6 @@ struct config_node *config_term(char *opcode,
 				struct parser_state *st);
 
 
-#line 196 "/home/lemon/code/nfs-ganesha/src/cmake-build-debug/config_parsing/conf_yacc.h"
+#line 196 "/home/cxa/nfs-ganesha-v0/src/cmake-build-debug/config_parsing/conf_yacc.h"
 
-#endif /* !YY_GANESHA_YY_HOME_LEMON_CODE_NFS_GANESHA_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED  */
+#endif /* !YY_GANESHA_YY_HOME_CXA_NFS_GANESHA_V0_SRC_CMAKE_BUILD_DEBUG_CONFIG_PARSING_CONF_YACC_H_INCLUDED  */
