@@ -517,7 +517,7 @@ _VALGRIND_MEMCHECK:BOOL=OFF
 fsalvfs_LIB_DEPENDS:STATIC=general;ganesha_nfsd;general;ntirpc;general;/usr/lib/x86_64-linux-gnu/libacl.so;general;/usr/lib/x86_64-linux-gnu/libcap.so;general;dl;general;-lpthread;general;/usr/lib/x86_64-linux-gnu/liburcu-bp.so;general;-Wl,--no-undefined;
 
 //Dependencies for the target
-ganesha_nfsd_LIB_DEPENDS:STATIC=general;ntirpc;general;/usr/lib/x86_64-linux-gnu/libacl.so;general;/usr/lib/x86_64-linux-gnu/libcap.so;general;dl;general;-lpthread;general;/usr/lib/x86_64-linux-gnu/liburcu-bp.so;
+ganesha_nfsd_LIB_DEPENDS:STATIC=general;ntirpc;general;/usr/lib/x86_64-linux-gnu/libacl.so;general;/usr/lib/x86_64-linux-gnu/libcap.so;general;dl;general;-lpthread;general;/usr/lib/x86_64-linux-gnu/liburcu-bp.so;general;rocksdb;
 
 //Value Computed by CMake
 nfs-ganesha_BINARY_DIR:STATIC=/home/cxa/nfs-ganesha-v0/src/cmake-build-debug

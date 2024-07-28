@@ -10,6 +10,8 @@ using byte = unsigned char;
 using trx_id_t = uint64_t;
 using roll_ptr_t = uint64_t;
 
+static constexpr const char * ROCKSDB_DATA_PATH = "/home/cxa/test_rocksdb";
+
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
 static constexpr const char * LOG_PATH_PREFIX = "/home/cxa/nfs_server/data/";
 static constexpr const char * SYS_TABLE_FILE = "/home/cxa/nfs_server/data/ibdata1";

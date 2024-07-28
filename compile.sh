@@ -34,7 +34,8 @@ echo "" > /var/log/nfs-ganesha.log
 # clear nfs-server
 # echo "start to reset nfs_server dir"
 # rm ~/nfs_server/* -rf
-# cp ~/init_dir/* -r ~/nfs_server/
+# rsync -avz --partial --progress n2:/home/cxa/init_dir/* /home/cxa/nfs_server/
+# cp ~/nfs_test/* ~/nfs_server/ -r
 # chmod -R 777 ~/nfs_server/data
 
 path="/var/run/ganesha"

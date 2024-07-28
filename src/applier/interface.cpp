@@ -7,6 +7,10 @@
 #include "applier/applier_config.h"
 #include "applier/log_log.h"
 #include "applier/log_apply.h"
+
+#include "rocksdb/db.h"
+#include "rocksdb/iterator.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -17,6 +21,61 @@ extern "C" {
 #endif
 
 void init_applier_module(void) {
+
+    // test rocksdb
+    rocksdb::Options options;
+    options.create_if_missing = true;
+    rocksdb::Status status = rocksdb::DB::Open(options,ROCKSDB_DATA_PATH,&db);
+    std::cout<<"create and open db ok, status " <<status.code()<<"\n";
+
+    std::string test_key1("key1");
+    std::string test_value1("value1");
+    rocksdb::Status s1 = db->Put(rocksdb::WriteOptions(),test_key1,test_value1);
+    std::string test_key2("key2");
+    std::string test_value2("value2");
+    rocksdb::Status s2 = db->Put(rocksdb::WriteOptions(),test_key2,test_value2);
+    std::string test_key3("key3");
+    std::string test_value3("value3");
+    rocksdb::Status s3 = db->Put(rocksdb::WriteOptions(),test_key3,test_value3);
+    if(s1.ok() && s2.ok() && s3.ok()){
+        std::cout<<"Put Key OK \n";
+        std::string saved_val1;
+        rocksdb::Status s = db->Get(rocksdb::ReadOptions(), test_key1, &saved_val1);
+
+        if(s.ok()){
+            std::cout<<"read ok, value is "<<saved_val1<<" \n";
+        }else{
+            std::cout<<"failed. \n";
+        }
+        std::string saved_val2;
+        rocksdb::Status s4 = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(),test_key1,test_key3);
+        if(s4.ok()){
+            std::cout<<"delete range ok \n";
+            rocksdb::Status s5 = db->Get(rocksdb::ReadOptions(), test_key2, &saved_val2);
+            if(s5.ok()){
+                std::cout<<"read: "<<saved_val2<<" status " <<s.code()<<"\n";
+            }else{
+                std::cout<<"OK, read no value \n ";
+            }
+            
+        }
+    }
+    std::string test_key4("123_9_78");
+    std::string test_key4_prefix("123_9");
+    std::string test_value4("value4");
+    rocksdb::Status s4 = db->Put(rocksdb::WriteOptions(),test_key4,test_value4);
+    if(s4.ok()){
+        std::cout<<"put key4 ok\n";
+    }
+    rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+    for(it->Seek(test_key4_prefix); it->Valid() && it->key().starts_with(test_key4_prefix); it->Next()){
+        // 打印key
+        std::cout << "Key: " << it->key().ToString() << std::endl;
+        // 打印value
+        std::cout << "Value: " << it->value().ToString() << std::endl;
+    }
+    delete it;
+    // end of test rocksdb
 
     PTHREAD_MUTEX_init(&log_group_mutex, NULL);
     PTHREAD_COND_init(&log_parse_condition, NULL);
@@ -342,6 +401,10 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
 //     主动提取相关的log进行apply
 //        LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, page_id = %u", space_id, page_id);
         auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
+        if(DataPageGroup::Get().Exist(space_id)){
+            LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d], memory_list.size() = %d", space_id, page_id, log_vector.size());
+            apply_index.print_stats();
+        }
 //        int count = 0;
         for (const auto &item: log_vector) {
             log_apply_do_apply(page_address, item.get());

@@ -137,8 +137,9 @@ static void log_apply_worker_work(int worker_index) {
             continue;
         }
 
-        if(DataPageGroup::Get().Exist(page_address.SpaceId()) && log_entry_list->size()!=0){
-            LogEvent(COMPONENT_FSAL, "## background apply, log_entry_list.size() = %d\n", log_entry_list->size());
+        if(DataPageGroup::Get().Exist(page_address.SpaceId())){
+            LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d], log_entry_list.size() = %d\n",page_address.SpaceId(), page_address.PageId(),log_entry_list->size());
+            apply_index.print_stats();
         }
         log_apply_do_apply(page_address, log_entry_list.get());
     }

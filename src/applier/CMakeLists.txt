@@ -11,3 +11,4 @@ SET(Applier_STAT_SRCS
 add_library(Applier OBJECT ${Applier_STAT_SRCS})
 add_sanitizers(Applier)
 set_target_properties(Applier PROPERTIES COMPILE_FLAGS "-fPIC")
+target_link_libraries(rocksdb)

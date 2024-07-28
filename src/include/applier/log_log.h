@@ -13,6 +13,8 @@
 #include "applier/bean.h"
 #include "applier/hash_util.h"
 
+#include "rocksdb/db.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -213,6 +215,8 @@ public:
         size_t total_log_len_ {0};
         size_t log_len_limit_ {APPLY_BATCH_SIZE}; // 一个index segment最多存储这么长的log
         std::unordered_map<PageAddress, log_list> index_segment_ {};
+
+        //== start lsn, end lsn
     };
 public:
     ApplyIndex() {
@@ -316,6 +320,9 @@ private:
 extern pthread_cond_t log_apply_condition; // 每次log parser 解析之后产生apply task，就会产生这个条件变量来唤醒log applier
 //extern std::list<std::unique_ptr<apply_task>> apply_task_requests;
 extern ApplyIndex apply_index;
+
+extern rocksdb::DB* db;
+
 extern pthread_mutex_t log_group_mutex;
 extern pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser
 extern pthread_cond_t log_write_condition; // 每次log applier 完成，释放出空间，就会产生这个条件变量来唤醒log writer

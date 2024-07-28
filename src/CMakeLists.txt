@@ -1668,6 +1668,7 @@ target_link_libraries(ganesha.nfsd
   ${SYSTEM_LIBRARIES}
   ${LTTNG_LIBRARIES}
   ${LDFLAG_DISALLOW_UNDEF}
+  rocksdb
 )
 set_target_properties(ganesha.nfsd PROPERTIES COMPILE_FLAGS "-fPIC")
 install(TARGETS ganesha.nfsd COMPONENT daemon DESTINATION bin)
@@ -1683,6 +1684,7 @@ if (USE_RADOS_RECOV)
     ganesha_nfsd
     ${RADOS_LIBRARIES}
     ${LDFLAG_DISALLOW_UNDEF}
+    rocksdb
   )
   install(TARGETS ganesha-rados-grace COMPONENT tools DESTINATION bin)
 endif(USE_RADOS_RECOV)
@@ -1700,6 +1702,7 @@ if(LINUX)
     ${SYSTEM_LIBRARIES}
     ${LTTNG_LIBRARIES}
     ${LDFLAG_DISALLOW_UNDEF}
+    rocksdb
   )
 
   if( USE_ADMIN_TOOLS )
@@ -1718,6 +1721,7 @@ target_link_libraries(verif_syntax
   ${SYSTEM_LIBRARIES}
   ${LTTNG_LIBRARIES}
   ${LDFLAG_DISALLOW_UNDEF}
+  rocksdb
 )
 
 ########### next target ###############
@@ -1731,6 +1735,7 @@ target_link_libraries(test_parsing
   ${SYSTEM_LIBRARIES}
   ${LTTNG_LIBRARIES}
   ${LDFLAG_DISALLOW_UNDEF}
+  rocksdb
 )
 
 ########### add a "make doc" target to call Doxygen

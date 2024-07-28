@@ -191,6 +191,7 @@ target_link_libraries(ganesha_nfsd
   ${SYSTEM_LIBRARIES}
   ${LTTNG_LIBRARIES}
   ${MOOSHIKA_LIBRARIES}
+  rocksdb
 )
 
 if(SANITIZE_ADDRESS)
