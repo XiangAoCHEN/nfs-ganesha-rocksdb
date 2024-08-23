@@ -131,17 +131,93 @@ static void log_apply_worker_work(int worker_index) {
 
     // do apply
     for (const auto &page_address: log_appliers[worker_index].logs) {
+        
+        auto start_time{std::chrono::steady_clock::now()};
         auto log_entry_list = apply_index.ExtractFront(page_address);//== background apply, read logs of one page
+        auto end_time{std::chrono::steady_clock::now()};
+        auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+        extract_duration_micros += duration_micros;
+        extract_cnt ++;
+
+        auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
+        std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
+                                 std::to_string(page_address.PageId()) + "_";
+        rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+        rocksdb::WriteOptions write_options;
+        auto db_start_time = std::chrono::steady_clock::now();
+        for(it->Seek(key_prefix); it->Valid() && it->key().starts_with(key_prefix); it->Next()){
+            rocksdb::Slice value_slice = it->value();
+            const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+            size_t size = value_slice.size();
+            LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+            rcdb_log_list->push_back(std::move(retrieved_entry));
+
+            // Delete the key after reading the value
+            rocksdb::Status del_status = db->Delete(write_options, it->key());
+            if (!del_status.ok()) {
+                std::cout << "Error deleting key: " << it->key().ToString() << "\n";
+            }
+        }
+        // bug
+        // std::string start_key = key_prefix;
+        // std::string end_key = key_prefix + "\xFF";
+        // rocksdb::Status del_status = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(), start_key, end_key);
+        // if (!del_status.ok()) {
+        //     std::cerr << "Error deleting range: " << del_status.ToString() << std::endl;
+        // }
+        auto db_end_time = std::chrono::steady_clock::now();
+        auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
+        db_bg_read_duration_micros += db_duration_micros;
+        db_bg_read_cnt ++;
+
         if (log_entry_list == nullptr) {
             // 这条log可能已经被其它的data page reader线程抽走了
             continue;
         }
 
         if(DataPageGroup::Get().Exist(page_address.SpaceId())){
-            LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d], log_entry_list.size() = %d\n",page_address.SpaceId(), page_address.PageId(),log_entry_list->size());
-            apply_index.print_stats();
+            // memory and rocksdb can be diffrerent, because memory use small batch
+            if(db_bg_read_cnt % 100 == 0){
+                LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d], memory_list.size() = %d, rocksd_list.size=%d",
+                    page_address.SpaceId(), page_address.PageId(),log_entry_list->size(), rcdb_log_list->size());
+                if(extract_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index extract IO %ld us, total extract %ld us, cnt = %ld, average extract %ld us",
+                        duration_micros.count(), extract_duration_micros.count(), extract_cnt, extract_duration_micros.count()/extract_cnt);
+                }
+                if(search_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index search, total search %ld us, cnt = %ld, average search %ld us",
+                        search_duration_micros.count(), search_cnt, search_duration_micros.count()/search_cnt);
+                }
+                LogEvent(COMPONENT_FSAL, "index total read %ld us, read cnt = %ld, average read %ld us",
+                        search_duration_micros.count()+extract_duration_micros.count(), search_cnt+extract_cnt, (search_duration_micros.count()+extract_duration_micros.count())/(search_cnt+extract_cnt));
+                if(db_bg_read_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db background read IO %ld us, total bg read %ld us, cnt = %ld, average bg read %ld us",
+                        db_duration_micros.count(), db_bg_read_duration_micros.count(), db_bg_read_cnt, db_bg_read_duration_micros.count()/db_bg_read_cnt);
+                }
+                if(db_fg_read_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db foreground read, total fg read %ld us, cnt = %ld, average fg read %ld us",
+                        db_fg_read_duration_micros.count(), db_fg_read_cnt, db_fg_read_duration_micros.count()/db_fg_read_cnt);
+                }
+                if(insert_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %ld us",
+                        insert_duration_micros.count(), insert_cnt, insert_duration_micros.count()/insert_cnt);
+                }
+                if(db_write_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %ld us",
+                        db_write_duration_micros.count(), db_write_cnt, db_write_duration_micros.count()/db_write_cnt);
+                }
+
+                    
+                // apply_index.print_stats();
+            }
         }
-        log_apply_do_apply(page_address, log_entry_list.get());
+
+
+        // log_apply_do_apply(page_address, log_entry_list.get());
+        if(rcdb_log_list->size() > 0){
+            log_apply_do_apply(page_address, rcdb_log_list.get());
+        }
+        
     }
 
 
@@ -170,7 +246,7 @@ static void *log_apply_scheduler_routine(void *scheduler_index) {
         size_t total_log_len = 0;
         auto task = log_apply_scheduler_acquire(&total_log_len);
 
-        LogEvent(COMPONENT_FSAL, "log applier starting apply %zu bytes log", total_log_len);
+        // LogEvent(COMPONENT_FSAL, "log applier starting apply %zu bytes log", total_log_len);
         auto need_to_apply = total_log_len;
 
         // 把每一个task分配给相应的worker
@@ -191,6 +267,7 @@ static void *log_apply_scheduler_routine(void *scheduler_index) {
         }
 
         // 自己变成worker进行工作
+        LogEvent(COMPONENT_FSAL, "log apply scheduler turn into worker");
         log_apply_worker_work(index);
 
         LogEvent(COMPONENT_FSAL, "applied %zu bytes log", need_to_apply);
@@ -215,12 +292,12 @@ void log_apply_thread_start(int n_thread) {
 
     // 首先启动scheduler
     int *scheduler_index = new int(0);
-    START_THREAD("log apply scheduler", &log_appliers[0].thread_id, log_apply_scheduler_routine, (void *)(scheduler_index));
+    START_THREAD("log apply scheduler 0", &log_appliers[0].thread_id, log_apply_scheduler_routine, (void *)(scheduler_index));
     n_thread -= 1;
 
     // 启动剩下的apply worker
     for (int i = 0; i < n_thread; ++i) {
-        std::string thread_name = "log apply scheduler";
+        std::string thread_name = "log apply worker " + std::to_string(i+1);
         thread_name += std::to_string(i);
         int *work_index = new int(i);
         START_THREAD(thread_name.c_str(), &log_appliers[i].thread_id, log_apply_worker_routine, (void *)(work_index));

@@ -14,14 +14,14 @@ cmake -S src -B src/cmake-build-debug -DCMAKE_BUILD_TYPE=Debug \
 -DUSE_FSAL_PROXY_V4:STRING=OFF -DUSE_FSAL_RGW:STRING=OFF \
 -DUSE_FSAL_XFS:STRING=OFF -DUSE_GSS=OFF
 
-cmake --build src/cmake-build-debug --parallel 20
+cmake --build src/cmake-build-debug --parallel 32
 
 cp src/cmake-build-debug/compile_commands.json ./
 
 # delete rocksdb
 echo "start to delete rocksdb"
-sudo rm /home/cxa/test_rockdsdb/* -rf
-# sudo chown -R cxa:cxa /home/cxa/test_rockdsdb
+sudo rm /home/cxa/test_rocksdb/* -rf
+# sudo chown -R cxa:cxa /home/cxa/test_rocksdb
 # g++ -std=c++17 -o clear_rocksdb clear_rocksdb.cpp -lrocksdb -lz -lbz2 -lsnappy -llz4 -lzstd -pthread
 # ./clear_rocksdb
 
@@ -32,10 +32,11 @@ echo "" > /var/log/nfs-ganesha.log
 # echo "" > /var/log/mysql_query.log
 
 # clear nfs-server
-# echo "start to reset nfs_server dir"
-# rm ~/nfs_server/* -rf
-# rsync -avz --partial --progress n2:/home/cxa/init_dir/* /home/cxa/nfs_server/
-# cp ~/nfs_test/* ~/nfs_server/ -r
+echo "start to reset nfs_server dir"
+rm ~/nfs_server/* -rf
+## rsync -avz --partial --progress n2:/home/cxa/init_dir/* /home/cxa/nfs_server/
+cp ~/nfs_test/* ~/nfs_server/ -r
+# cp /home/cxa/mysql/init_dir/* ~/nfs_server/ -r
 # chmod -R 777 ~/nfs_server/data
 
 path="/var/run/ganesha"

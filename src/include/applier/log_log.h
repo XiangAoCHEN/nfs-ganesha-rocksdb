@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <atomic>
 #include <unordered_set>
+#include <chrono>
 #include "applier/applier_config.h"
 #include "applier/bean.h"
 #include "applier/hash_util.h"
@@ -174,6 +175,14 @@ public:
                 index_segment_[page_address]->push_back(std::move(log));
             }
             total_log_len_ += log_len;
+
+            if(insert_lsn_contunious && end_lsn!=0 && log.log_start_lsn_!=end_lsn+1){
+                insert_lsn_contunious = false;
+                LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
+            }
+            start_lsn = std::min(start_lsn, log.log_start_lsn_);
+            end_lsn = std::max(end_lsn, log.log_start_lsn_);
+            
             return true;
         }
         bool Full() const {
@@ -203,20 +212,33 @@ public:
         size_t getAddrNum(){return index_segment_.size();}
         size_t getEntryLen(){return total_log_len_;}
 
-        size_t tmp_search(const PageAddress &page_address) {
+        size_t tmp_search_spaceid(const space_id_t &space_id) {
             size_t entry_count = 0;
             for (auto &item: index_segment_) {
-                if (item.first.SpaceId() == page_address.SpaceId() && item.first.SpaceId() == page_address.SpaceId()) {
+                if (item.first.SpaceId() == space_id) {
                     entry_count += item.second->size();
                 }
             }
+            return entry_count;
+        }
+        size_t tmp_search_pageid(const PageAddress &page_address) {
+            size_t entry_count = 0;
+            for (auto &item: index_segment_) {
+                if (item.first.SpaceId() == page_address.SpaceId() && item.first.PageId() == page_address.PageId()) {
+                    entry_count += item.second->size();
+                }
+            }
+            return entry_count;
         }
     private:
         size_t total_log_len_ {0};
         size_t log_len_limit_ {APPLY_BATCH_SIZE}; // 一个index segment最多存储这么长的log
         std::unordered_map<PageAddress, log_list> index_segment_ {};
-
+    public:
         //== start lsn, end lsn
+        lsn_t start_lsn{MAX_LSN};
+        lsn_t end_lsn{0};
+        bool insert_lsn_contunious{true};
     };
 public:
     ApplyIndex() {
@@ -231,6 +253,14 @@ public:
     }
     void InsertBack(LogEntry &&log) {
         PthreadMutexGuard guard(lock_);
+        
+        if(lsn_contunious && end_lsn!=0 && log.log_start_lsn_!=end_lsn+1){
+            lsn_contunious = false;
+            LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
+        }
+        start_lsn = std::min(start_lsn, log.log_start_lsn_);
+        end_lsn = std::max(end_lsn, log.log_start_lsn_);
+        
         if (index_.empty()) {
             index_.push_back(std::make_unique<IndexSegment>());
             pthread_cond_signal(&index_not_empty_cond_);
@@ -246,8 +276,8 @@ public:
     }
 
     IndexSegment::log_list ExtractFront(const PageAddress &page_address) {
-
         PthreadMutexGuard guard(lock_);
+
         // wait until index_ is not empty
         while (index_.empty()) {
             pthread_cond_wait(&index_not_empty_cond_, &lock_);
@@ -288,6 +318,7 @@ public:
 
     std::vector<IndexSegment::log_list> Search(const PageAddress &page_address) {
         PthreadMutexGuard guard(lock_);
+
         // wait until index_ is not empty
         std::vector<IndexSegment::log_list> res;
         for (auto &item: index_) {
@@ -309,19 +340,55 @@ public:
         LogEvent(COMPONENT_FSAL, "## memory list,%zu segments, %zu address, %zu byte log entries", index_.size(), address_count,entry_count);
     }
 
+    void _tmp_check_page(const PageAddress &page_address){
+        PthreadMutexGuard guard(lock_);
+        size_t entry_count = 0;
+        for (auto &item: index_) {
+            entry_count += item->tmp_search_pageid(page_address);
+        }
+        if(entry_count == 0){
+            LogEvent(COMPONENT_FSAL, "## spaceid %u, no page for pageid %u", page_address.SpaceId(), page_address.PageId());
+            for (auto &item: index_) {
+                entry_count += item->tmp_search_spaceid(page_address.SpaceId());
+            }
+            LogEvent(COMPONENT_FSAL, "## spaceid %u, %zu pages", page_address.SpaceId(), entry_count);
+        }
+    }
+
 private:
     pthread_cond_t index_not_empty_cond_ {};
     pthread_cond_t front_full_cond_ {};
     pthread_mutex_t lock_ {}; // protect index_
     std::list<std::unique_ptr<IndexSegment>> index_ {};
+public:
+    // std::chrono::microseconds search_duration_micros {};
+    // std::chrono::microseconds extract_duration_micros {};
+    // size_t search_cnt {};
+    // size_t extract_cnt {};
+
+    lsn_t start_lsn{MAX_LSN};
+    lsn_t end_lsn{0};
+    bool lsn_contunious{true};
 };
 
 //extern pthread_mutex_t log_apply_task_mutex;
 extern pthread_cond_t log_apply_condition; // 每次log parser 解析之后产生apply task，就会产生这个条件变量来唤醒log applier
 //extern std::list<std::unique_ptr<apply_task>> apply_task_requests;
 extern ApplyIndex apply_index;
+extern std::chrono::microseconds insert_duration_micros;
+extern std::chrono::microseconds search_duration_micros;
+extern std::chrono::microseconds extract_duration_micros;
+extern size_t insert_cnt;
+extern size_t search_cnt;
+extern size_t extract_cnt;
 
 extern rocksdb::DB* db;
+extern std::chrono::microseconds db_write_duration_micros;
+extern std::chrono::microseconds db_fg_read_duration_micros;
+extern std::chrono::microseconds db_bg_read_duration_micros;
+extern size_t db_write_cnt;
+extern size_t db_fg_read_cnt;
+extern size_t db_bg_read_cnt;
 
 extern pthread_mutex_t log_group_mutex;
 extern pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser

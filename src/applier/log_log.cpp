@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <cassert>
+#include <chrono>
 #include "applier/log_log.h"
 #include "applier/applier_config.h"
 #include "applier/utility.h"
@@ -17,8 +18,20 @@ log_group_t log_group;
 pthread_cond_t log_apply_condition; // 每次log parser 解析之后产生apply task，就会产生这个条件变量来唤醒log applier
 //std::list<std::unique_ptr<apply_task>> apply_task_requests;
 ApplyIndex apply_index;
+std::chrono::microseconds insert_duration_micros;
+std::chrono::microseconds search_duration_micros;
+std::chrono::microseconds extract_duration_micros;
+size_t insert_cnt;
+size_t search_cnt;
+size_t extract_cnt;
 
 rocksdb::DB* db;
+std::chrono::microseconds db_write_duration_micros;
+std::chrono::microseconds db_fg_read_duration_micros;
+std::chrono::microseconds db_bg_read_duration_micros;
+size_t db_write_cnt;
+size_t db_fg_read_cnt;
+size_t db_bg_read_cnt;
 
 pthread_mutex_t log_group_mutex;
 pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser

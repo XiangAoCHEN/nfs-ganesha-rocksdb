@@ -46,6 +46,76 @@ public:
         other.log_body_end_ptr_ = nullptr;
     }
 
+    std::vector<byte> serialize() const {
+        // 计算需要序列化的总字节大小
+        size_t log_body_len = 0;
+        if (log_body_start_ptr_ && log_body_end_ptr_ && log_body_end_ptr_ > log_body_start_ptr_) {
+            log_body_len = log_body_end_ptr_ - log_body_start_ptr_;
+        }
+
+        size_t total_size = sizeof(type_) + sizeof(space_id_) + sizeof(page_id_) +
+                            sizeof(log_start_lsn_) + sizeof(log_len_) + sizeof(log_body_len)
+                            + log_body_len;
+        std::vector<byte> buffer(total_size);
+
+        size_t offset = 0;
+
+        // Serialize fixed-length fields
+        memcpy(buffer.data() + offset, &type_, sizeof(type_));
+        offset += sizeof(type_);
+        memcpy(buffer.data() + offset, &space_id_, sizeof(space_id_));
+        offset += sizeof(space_id_);
+        memcpy(buffer.data() + offset, &page_id_, sizeof(page_id_));
+        offset += sizeof(page_id_);
+        memcpy(buffer.data() + offset, &log_start_lsn_, sizeof(log_start_lsn_));
+        offset += sizeof(log_start_lsn_);
+        memcpy(buffer.data() + offset, &log_len_, sizeof(log_len_));
+        offset += sizeof(log_len_);
+        memcpy(buffer.data() + offset, &log_body_len, sizeof(log_body_len));
+        offset += sizeof(log_body_len);
+
+        // 序列化可变长度的log body
+        if (log_body_start_ptr_ && log_body_len > 0) {
+            memcpy(buffer.data() + offset, log_body_start_ptr_, log_body_len);
+        }
+
+        return buffer;
+    }
+    static LogEntry deserialize(const byte* data, size_t size) {
+        size_t offset = 0;
+        LOG_TYPE type;
+        space_id_t space_id;
+        page_id_t page_id;
+        lsn_t log_start_lsn;
+        size_t log_len;
+        size_t log_body_len;
+
+        // Deserialize fixed-length fields
+        memcpy(&type, data + offset, sizeof(type));
+        offset += sizeof(type);
+        memcpy(&space_id, data + offset, sizeof(space_id));
+        offset += sizeof(space_id);
+        memcpy(&page_id, data + offset, sizeof(page_id));
+        offset += sizeof(page_id);
+        memcpy(&log_start_lsn, data + offset, sizeof(log_start_lsn));
+        offset += sizeof(log_start_lsn);
+        memcpy(&log_len, data + offset, sizeof(log_len));
+        offset += sizeof(log_len);
+        memcpy(&log_body_len, data+offset, sizeof(log_body_len));
+        offset += sizeof(log_body_len);
+
+        // Deserialize variable-length log body
+        byte* log_body_start_ptr = nullptr;
+        byte* log_body_end_ptr = nullptr;
+        if (log_body_len > 0 && offset + log_body_len <= size) {
+            log_body_start_ptr = new byte[log_body_len];
+            memcpy(log_body_start_ptr, data + offset, log_body_len);
+            log_body_end_ptr = log_body_start_ptr + log_body_len;  // 设置结束指针
+        }
+
+        return LogEntry(type, space_id, page_id, log_start_lsn, log_len, log_body_start_ptr, log_body_end_ptr);
+    }
+
     LogEntry& operator=(const LogEntry& other) = delete;
     LogEntry& operator=(LogEntry&& other) = delete;
 

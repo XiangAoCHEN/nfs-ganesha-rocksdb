@@ -1,16 +1,22 @@
 #ifndef NFS_GANESHA_SRC_INCLUDE_APPLIER_CONFIG_H_
 #define NFS_GANESHA_SRC_INCLUDE_APPLIER_CONFIG_H_
 #include <cinttypes>
+#include <limits>
 using page_id_t = uint32_t;
 using space_id_t = uint32_t;
 using frame_id_t = uint32_t;
 using lsn_t = uint64_t;
+constexpr lsn_t MAX_LSN = std::numeric_limits<lsn_t>::max();
 using size_t = uint64_t;
 using byte = unsigned char;
 using trx_id_t = uint64_t;
 using roll_ptr_t = uint64_t;
 
 static constexpr const char * ROCKSDB_DATA_PATH = "/home/cxa/test_rocksdb";
+static constexpr const size_t ROCKSDB_WRITE_BUFFER_SIZE = 64 * 1024 * 1024; // 64MB
+static constexpr const size_t ROCKSDB_MAX_WRITE_BUFFER_NUMBER = 3;
+static constexpr const size_t ROCKSDB_DB_WRITE_BUFFER_SIZE = 512 * 1024 * 1024; // 512MB
+static constexpr const size_t ROCKSDB_BLOCK_CACHE_SIZE = 512 * 1024 * 1024; // 512MB
 
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
 static constexpr const char * LOG_PATH_PREFIX = "/home/cxa/nfs_server/data/";
