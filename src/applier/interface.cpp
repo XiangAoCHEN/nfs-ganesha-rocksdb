@@ -423,14 +423,14 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
 
 //     主动提取相关的log进行apply
 //        LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, page_id = %u", space_id, page_id);
-        auto start_time{std::chrono::steady_clock::now()};
-        auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
-        auto end_time{std::chrono::steady_clock::now()};
-        auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        search_duration_micros += duration_micros;
-        search_cnt ++;
+        // auto start_time{std::chrono::steady_clock::now()};
+        // auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
+        // auto end_time{std::chrono::steady_clock::now()};
+        // auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+        // search_duration_micros += duration_micros;
+        // search_cnt ++;
 
-/*
+
         // rocksdb prefix seek
         auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
         std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
@@ -465,7 +465,7 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
         db_fg_read_duration_micros += db_duration_micros;
         db_fg_read_cnt ++;
-*/
+
 
         // rocksdb multiget
         // std::vector<lsn_t> memory_lsn_vector;
@@ -557,13 +557,13 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         */
 
 
-        for (const auto &item: log_vector) {
-            log_apply_do_apply(page_address, item.get());
-        }
-
-        // if(rcdb_log_list->size() > 0){
-        //     log_apply_do_apply(page_address, rcdb_log_list.get());
+        // for (const auto &item: log_vector) {
+        //     log_apply_do_apply(page_address, item.get());
         // }
+
+        if(rcdb_log_list->size() > 0){
+            log_apply_do_apply(page_address, rcdb_log_list.get());
+        }
 
     }
 }
