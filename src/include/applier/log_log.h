@@ -178,7 +178,7 @@ public:
 
             if(insert_lsn_contunious && end_lsn!=0 && log.log_start_lsn_!=end_lsn+1){
                 insert_lsn_contunious = false;
-                LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
+                // LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
             }
             start_lsn = std::min(start_lsn, log.log_start_lsn_);
             end_lsn = std::max(end_lsn, log.log_start_lsn_);
@@ -256,7 +256,7 @@ public:
         
         if(lsn_contunious && end_lsn!=0 && log.log_start_lsn_!=end_lsn+1){
             lsn_contunious = false;
-            LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
+            // LogEvent(COMPONENT_FSAL, "## lsn not contunious, end_lsn %lu, new lsn %lu", end_lsn, log.log_start_lsn_);
         }
         start_lsn = std::min(start_lsn, log.log_start_lsn_);
         end_lsn = std::max(end_lsn, log.log_start_lsn_);

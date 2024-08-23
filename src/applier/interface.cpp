@@ -430,6 +430,7 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         search_duration_micros += duration_micros;
         search_cnt ++;
 
+/*
         // rocksdb prefix seek
         auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
         std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
@@ -464,6 +465,7 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
         db_fg_read_duration_micros += db_duration_micros;
         db_fg_read_cnt ++;
+*/
 
         // rocksdb multiget
         // std::vector<lsn_t> memory_lsn_vector;
@@ -480,7 +482,10 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         // std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
         //                          std::to_string(page_address.PageId()) + "_";
 
+        // latency test
+        /*
         if(DataPageGroup::Get().Exist(space_id)){
+            
             std::vector<lsn_t> memory_lsn_vector;
             for (const auto &item: log_vector) {
                 std::list<LogEntry> *log_entry_list = item.get();
@@ -498,10 +503,6 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             }
             std::sort(rcdb_lsn_vector.begin(), rcdb_lsn_vector.end());
 
-            // if(memory_lsn_vector.size() ==0){
-            //     apply_index._tmp_check_page(page_address);
-            // }
-
             if(memory_lsn_vector.size() != rcdb_lsn_vector.size()){
                 LogEvent(COMPONENT_FSAL, "## on demand apply for [%d,%d], size differ, memory_list.size() = %d, rocksd_list.size=%d",
                     page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
@@ -518,10 +519,11 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
                         page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
                 }
             }
+            
 
+            // latency test
             if(db_fg_read_cnt % 100 == 0){
-                LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d], memory_list.size() = %d, rocksd_list.size=%d", 
-                    space_id, page_id, memory_lsn_vector.size(), rcdb_log_list->size());
+                LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d]", space_id, page_id);
                 if(search_cnt>0){
                     LogEvent(COMPONENT_FSAL, "index search IO %ld us, total search %ld us, cnt = %ld, average search %ld us",
                         duration_micros.count(), search_duration_micros.count(), search_cnt, search_duration_micros.count()/search_cnt);
@@ -549,26 +551,20 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
                         db_write_duration_micros.count(), db_write_cnt, db_write_duration_micros.count()/db_write_cnt);
                 }
 
-
-                // apply_index.print_stats();
             }
             
         }
+        */
 
-//        int count = 0;
-//         for (const auto &item: log_vector) {
-//             log_apply_do_apply(page_address, item.get());
-// //            count += item.get()->size();
-//         }
 
-        if(rcdb_log_list->size() > 0){
-            log_apply_do_apply(page_address, rcdb_log_list.get());
+        for (const auto &item: log_vector) {
+            log_apply_do_apply(page_address, item.get());
         }
-//            count += item.get()->size();
-        
-//        if (count > 0) {
-//            LogEvent(COMPONENT_FSAL, "data page reader end applying space id = %d, page_id = %u, applied %d logs", space_id, page_id, count);
-//        }
+
+        // if(rcdb_log_list->size() > 0){
+        //     log_apply_do_apply(page_address, rcdb_log_list.get());
+        // }
+
     }
 }
 
