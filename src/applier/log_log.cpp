@@ -26,12 +26,14 @@ size_t search_cnt;
 size_t extract_cnt;
 
 rocksdb::DB* db;
+rocksdb::Options db_options;
 std::chrono::microseconds db_write_duration_micros;
 std::chrono::microseconds db_fg_read_duration_micros;
 std::chrono::microseconds db_bg_read_duration_micros;
 size_t db_write_cnt;
 size_t db_fg_read_cnt;
 size_t db_bg_read_cnt;
+// pthread_mutex_t db_mutex;// db frontground and background mutex
 
 pthread_mutex_t log_group_mutex;
 pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser

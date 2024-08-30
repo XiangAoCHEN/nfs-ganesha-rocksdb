@@ -119,6 +119,30 @@ public:
     LogEntry& operator=(const LogEntry& other) = delete;
     LogEntry& operator=(LogEntry&& other) = delete;
 
+    bool operator==(const LogEntry& other) const {
+        // 比较固定长度的字段
+        if (type_ != other.type_) return false;
+        if (space_id_ != other.space_id_) return false;
+        if (page_id_ != other.page_id_) return false;
+        if (log_start_lsn_ != other.log_start_lsn_) return false;
+        if (log_len_ != other.log_len_) return false;
+
+        // 比较log body的长度
+        size_t this_log_body_len = log_body_end_ptr_ - log_body_start_ptr_;
+        size_t other_log_body_len = other.log_body_end_ptr_ - other.log_body_start_ptr_;
+
+        if (this_log_body_len != other_log_body_len) return false;
+
+        // 比较log body的内容
+        if (this_log_body_len > 0 && log_body_start_ptr_ && other.log_body_start_ptr_) {
+            if (memcmp(log_body_start_ptr_, other.log_body_start_ptr_, this_log_body_len) != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     LOG_TYPE type_ {};
     space_id_t space_id_ {};
     page_id_t page_id_ {};

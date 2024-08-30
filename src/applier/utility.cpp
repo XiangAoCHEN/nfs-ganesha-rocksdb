@@ -129,6 +129,12 @@ const char* GetLogString(LOG_TYPE type) {
         case LOG_TYPE::MLOG_DUMMY_RECORD:
             return("MLOG_DUMMY_RECORD");
 
+        case LOG_TYPE::MLOG_FILE_CREATE:
+            return("MLOG_FILE_CREATE");
+        
+        case LOG_TYPE::MLOG_FILE_RENAME:
+            return("MLOG_FILE_RENAME");
+
         case LOG_TYPE::MLOG_FILE_DELETE:
             return("MLOG_FILE_DELETE");
 
@@ -204,11 +210,11 @@ const char* GetLogString(LOG_TYPE type) {
         case LOG_TYPE::MLOG_INIT_FILE_PAGE2:
             return("MLOG_INIT_FILE_PAGE2");
 
-        case LOG_TYPE::MLOG_INDEX_LOAD:
-            return("MLOG_INDEX_LOAD");
-
         case LOG_TYPE::MLOG_TRUNCATE:
             return("MLOG_TRUNCATE");
+
+        case LOG_TYPE::MLOG_INDEX_LOAD:
+            return("MLOG_INDEX_LOAD");
 
         default:
             assert(false);

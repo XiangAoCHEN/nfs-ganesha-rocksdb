@@ -1,10 +1,13 @@
 #include <memory>
+#include <sstream>
 #include "applier/log_apply.h"
 #include "applier/log_log.h"
 #include "applier/utility.h"
 #include "applier/buffer_pool.h"
 #include "applier/log_parse.h"
 #include "applier/interface.h"
+
+#include "rocksdb/sst_file_reader.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +42,7 @@ static std::vector<PageAddress> log_apply_scheduler_acquire(size_t *total_log_le
 }
 
 static bool log_apply_apply_one_log(Page *page, const LogEntry &log) {
+    // LogEvent(COMPONENT_FSAL, "apply [%d,%d], page lsn = %d, log lsn = %d, type = %s", page->GetSpaceId(),page->GetPageId(),page->GetLSN(),log.log_start_lsn_,GetLogString(log.type_));
     byte *ret;
     switch (log.type_) {
         case MLOG_1BYTE:
@@ -129,48 +133,163 @@ static void log_apply_worker_work(int worker_index) {
 
     log_appliers[worker_index].is_running = true;
 
+    //rocksdb
+    auto db_start_time = std::chrono::steady_clock::now();
+    // pthread_mutex_lock(&db_mutex);
+    std::vector<rocksdb::LiveFileMetaData> metadata;
+    db->GetLiveFilesMetaData(&metadata);
+    int max_level = -1;
+    for (const auto& file_meta : metadata) {
+        max_level = std::max(max_level, file_meta.level);
+    }
+    if(max_level == -1){
+        LogEvent(COMPONENT_FSAL, "No SST file found");
+    }else
+    {
+        //select one max-level SST file with smallest range: oldest log
+        std::string max_level_file_path;
+        std::string max_level_file_name;
+        std::string min_key;
+        bool first_file = true;
+        for (const auto& file_meta : metadata) {
+            if (file_meta.level == max_level) {
+                if (first_file || file_meta.smallestkey.compare(min_key) < 0) {
+                    LogEvent(COMPONENT_FSAL, "SST file: %s, smallest key: %s", file_meta.name.c_str(), file_meta.smallestkey.c_str());
+                    min_key = file_meta.smallestkey;
+                    max_level_file_path = file_meta.directory + file_meta.name;
+                    max_level_file_name = file_meta.name;
+                    first_file = false;
+                }
+            }
+        }
+
+        rocksdb::SstFileReader sst_reader(db_options);
+        rocksdb::Status status = sst_reader.Open(max_level_file_path);
+        if (!status.ok()) {
+            LogEvent(COMPONENT_FSAL, "Error opening SST file: %s", status.ToString().c_str());
+        }else{
+            rocksdb::ReadOptions read_options;
+            std::unique_ptr<rocksdb::Iterator> it(sst_reader.NewIterator(read_options));
+
+            PageAddress last_page_address;
+            bool first_flag = true;
+            auto page_logs = std::make_unique<std::list<LogEntry>>();
+            for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                std::stringstream ss(it->key().ToString());
+                std::string token;
+                space_id_t space_id = 0;
+                page_id_t page_id = 0;
+                lsn_t lsn = 0;
+                if (std::getline(ss, token, '_')) space_id = static_cast<uint32_t>(std::stoul(token));
+                if (std::getline(ss, token, '_')) page_id = static_cast<uint32_t>(std::stoul(token));
+                if (std::getline(ss, token, '_')) lsn = static_cast<uint64_t>(std::stoull(token));
+                
+                if(space_id == 0 && page_id == 0 && lsn == 0){
+                    LogEvent(COMPONENT_FSAL, "Iterate SST file, error parsing key: %s", it->key().ToString().c_str());
+                    continue;
+                }
+                
+                db_bg_read_cnt ++;
+                PageAddress page_address(space_id, page_id);
+
+                if (first_flag) {
+                    first_flag = false;
+                    last_page_address = page_address;
+                }
+                if(last_page_address == page_address){//append
+                    rocksdb::Slice value_slice = it->value();
+                    const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+                    size_t size = value_slice.size();
+                    LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+                    page_logs->push_back(std::move(retrieved_entry));
+                }else{// new page
+                    
+                    if(page_logs->size() > 0){
+                        log_apply_do_apply(last_page_address, page_logs.get());
+                    }
+
+                    last_page_address = page_address;
+                    page_logs->clear();
+                    rocksdb::Slice value_slice = it->value();
+                    const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+                    size_t size = value_slice.size();
+                    LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+                    page_logs->push_back(std::move(retrieved_entry));
+                }
+            }
+
+            // Handle the last page logs if any
+            if (!page_logs->empty()) {
+                log_apply_do_apply(last_page_address, page_logs.get());
+                page_logs->clear();
+            }
+
+            if (!it->status().ok()) {
+                LogEvent(COMPONENT_FSAL, "Error during iteration: %s", it->status().ToString().c_str());
+            }
+            it.reset();
+
+            status = db->DeleteFile(max_level_file_name);
+
+            if (!status.ok()) {
+                LogEvent(COMPONENT_FSAL, "Error deleting SST file: %s", status.ToString().c_str());
+            } else {
+                LogEvent(COMPONENT_FSAL, "SST file %s deleted successfully.", max_level_file_path.c_str());
+            }
+        }
+    }
+    // pthread_mutex_unlock(&db_mutex);
+    auto db_end_time = std::chrono::steady_clock::now();
+    auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
+    db_bg_read_duration_micros += db_duration_micros;
+    
+    
     // do apply
+    size_t page_cnt = 0;
     for (const auto &page_address: log_appliers[worker_index].logs) {
-        
+        page_cnt++;
+        if(page_cnt == 288){
+            LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d]",page_address.SpaceId(), page_address.PageId());
+        }
         auto start_time{std::chrono::steady_clock::now()};
         auto log_entry_list = apply_index.ExtractFront(page_address);//== background apply, read logs of one page
         auto end_time{std::chrono::steady_clock::now()};
         auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
         extract_duration_micros += duration_micros;
-        extract_cnt ++;
+        if (log_entry_list != nullptr) extract_cnt += log_entry_list->size();
 
-        
+
         //rocksdb
-        auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
-        std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
-                                 std::to_string(page_address.PageId()) + "_";
-        rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
-        rocksdb::WriteOptions write_options;
-        auto db_start_time = std::chrono::steady_clock::now();
-        for(it->Seek(key_prefix); it->Valid() && it->key().starts_with(key_prefix); it->Next()){
-            rocksdb::Slice value_slice = it->value();
-            const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
-            size_t size = value_slice.size();
-            LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
-            rcdb_log_list->push_back(std::move(retrieved_entry));
+        // auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
+        // std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
+        //                          std::to_string(page_address.PageId()) + "_";
+        // rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+        // rocksdb::WriteOptions write_options;
+        // auto db_start_time = std::chrono::steady_clock::now();
+        // for(it->Seek(key_prefix); it->Valid() && it->key().starts_with(key_prefix); it->Next()){
+        //     rocksdb::Slice value_slice = it->value();
+        //     const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+        //     size_t size = value_slice.size();
+        //     LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+        //     rcdb_log_list->push_back(std::move(retrieved_entry));
 
-            // Delete the key after reading the value
-            rocksdb::Status del_status = db->Delete(write_options, it->key());
-            if (!del_status.ok()) {
-                std::cout << "Error deleting key: " << it->key().ToString() << "\n";
-            }
-        }
-        // bug
-        // std::string start_key = key_prefix;
-        // std::string end_key = key_prefix + "\xFF";
-        // rocksdb::Status del_status = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(), start_key, end_key);
-        // if (!del_status.ok()) {
-        //     std::cerr << "Error deleting range: " << del_status.ToString() << std::endl;
+        //     // Delete the key after reading the value
+        //     rocksdb::Status del_status = db->Delete(write_options, it->key());
+        //     if (!del_status.ok()) {
+        //         std::cout << "Error deleting key: " << it->key().ToString() << "\n";
+        //     }
         // }
-        auto db_end_time = std::chrono::steady_clock::now();
-        auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
-        db_bg_read_duration_micros += db_duration_micros;
-        db_bg_read_cnt ++;
+        // // bug
+        // // std::string start_key = key_prefix;
+        // // std::string end_key = key_prefix + "\xFF";
+        // // rocksdb::Status del_status = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(), start_key, end_key);
+        // // if (!del_status.ok()) {
+        // //     std::cerr << "Error deleting range: " << del_status.ToString() << std::endl;
+        // // }
+        // auto db_end_time = std::chrono::steady_clock::now();
+        // auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
+        // db_bg_read_duration_micros += db_duration_micros;
+        // db_bg_read_cnt ++;
         
 
         // if (log_entry_list == nullptr) {
@@ -211,18 +330,13 @@ static void log_apply_worker_work(int worker_index) {
                     db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
             }
 
-                
             // apply_index.print_stats();
-            
         }
         
-
-
         // log_apply_do_apply(page_address, log_entry_list.get());
-        if(rcdb_log_list->size() > 0){
-            log_apply_do_apply(page_address, rcdb_log_list.get());
-        }
-        
+        // if(rcdb_log_list->size() > 0){
+        //     log_apply_do_apply(page_address, rcdb_log_list.get());
+        // }
     }
 
 

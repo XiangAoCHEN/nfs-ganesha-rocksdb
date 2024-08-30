@@ -47,6 +47,7 @@ class PageAddress {
 public:
     PageAddress() = default;
     PageAddress(space_id_t space_id, page_id_t page_id) noexcept : space_id(space_id), page_id(page_id) {}
+
     [[nodiscard]] space_id_t SpaceId() const noexcept {return space_id;}
     [[nodiscard]] page_id_t PageId() const noexcept {return page_id;}
     bool operator==(const PageAddress &other) const noexcept {
@@ -55,7 +56,14 @@ public:
     bool operator!=(const PageAddress &other) const noexcept {
         return !(operator==(other));
     }
-
+    PageAddress& operator=(const PageAddress& other) noexcept {
+        if (this != &other) {
+            space_id = other.space_id;
+            page_id = other.page_id;
+        }
+        return *this;
+    }
+    
 private:
     space_id_t space_id {};
     page_id_t page_id {};
@@ -271,6 +279,7 @@ public:
         index_.back()->Insert(std::move(log));
         if (index_.back()->Full()) {
             // 唤醒log applier scheduler
+            //== background apply
             pthread_cond_signal(&front_full_cond_);
         }
     }
@@ -383,12 +392,14 @@ extern size_t search_cnt;
 extern size_t extract_cnt;
 
 extern rocksdb::DB* db;
+extern rocksdb::Options db_options;
 extern std::chrono::microseconds db_write_duration_micros;
 extern std::chrono::microseconds db_fg_read_duration_micros;
 extern std::chrono::microseconds db_bg_read_duration_micros;
 extern size_t db_write_cnt;
 extern size_t db_fg_read_cnt;
 extern size_t db_bg_read_cnt;
+// extern pthread_mutex_t db_mutex;
 
 extern pthread_mutex_t log_group_mutex;
 extern pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser

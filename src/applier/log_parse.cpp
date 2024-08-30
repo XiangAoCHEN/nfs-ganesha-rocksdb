@@ -169,7 +169,7 @@ void* log_parse_thread_routine(void*) {
             start_ptr += len;
             log_parser.parsed_lsn = recv_calc_lsn_on_data_add(log_parser.parsed_lsn, len);
         }
-//        LogEvent(COMPONENT_FSAL, "log parser parsed a batch log %zu bytes", total_len);
+
     }
 }
 

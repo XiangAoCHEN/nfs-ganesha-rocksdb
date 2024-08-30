@@ -25,67 +25,76 @@ extern "C" {
 void init_applier_module(void) {
 
     // test rocksdb
-    rocksdb::Options options;
-    options.create_if_missing = true;
+    // rocksdb::Options options;
+    db_options.create_if_missing = true;
+    // level 0
+    db_options.level0_file_num_compaction_trigger = ROCKSDB_LEVEL0_FILE_NUM_COMPACTION_TRIGGER;
+    db_options.min_write_buffer_number_to_merge = ROCKSDB_MIN_WRITE_BUFFER_NUMBER_TO_MERGE;
+    // level 1
+    db_options.target_file_size_base = ROCKSDB_TARGET_FILE_SIZE_BASE;
+    db_options.max_bytes_for_level_base = ROCKSDB_MAX_BYTES_FOR_LEVEL_BASE;
+    db_options.max_bytes_for_level_multiplier = ROCKSDB_MAX_BYTES_FOR_LEVEL_MULTIPLIER;
+    // total levels
+    db_options.num_levels = ROCKSDB_NUM_LEVELS;
     //write buffer
-    options.write_buffer_size = ROCKSDB_WRITE_BUFFER_SIZE;
-    options.max_write_buffer_number = ROCKSDB_MAX_WRITE_BUFFER_NUMBER;
-    options.db_write_buffer_size = ROCKSDB_DB_WRITE_BUFFER_SIZE;
+    db_options.write_buffer_size = ROCKSDB_WRITE_BUFFER_SIZE;
+    db_options.max_write_buffer_number = ROCKSDB_MAX_WRITE_BUFFER_NUMBER;
+    db_options.db_write_buffer_size = ROCKSDB_DB_WRITE_BUFFER_SIZE;
     // block cache
     rocksdb::BlockBasedTableOptions table_options;
     table_options.block_cache = rocksdb::NewLRUCache(ROCKSDB_BLOCK_CACHE_SIZE);
-    options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
+    db_options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
 
-    rocksdb::Status status = rocksdb::DB::Open(options,ROCKSDB_DATA_PATH,&db);
+    rocksdb::Status status = rocksdb::DB::Open(db_options,ROCKSDB_DATA_PATH,&db);
     std::cout<<"create and open db ok, status " <<status.code()<<"\n";
 
-    std::string test_key1("key1");
-    std::string test_value1("value1");
-    rocksdb::Status s1 = db->Put(rocksdb::WriteOptions(),test_key1,test_value1);
-    std::string test_key2("key2");
-    std::string test_value2("value2");
-    rocksdb::Status s2 = db->Put(rocksdb::WriteOptions(),test_key2,test_value2);
-    std::string test_key3("key3");
-    std::string test_value3("value3");
-    rocksdb::Status s3 = db->Put(rocksdb::WriteOptions(),test_key3,test_value3);
-    if(s1.ok() && s2.ok() && s3.ok()){
-        std::cout<<"Put Key OK \n";
-        std::string saved_val1;
-        rocksdb::Status s = db->Get(rocksdb::ReadOptions(), test_key1, &saved_val1);
+    // std::string test_key1("key1");
+    // std::string test_value1("value1");
+    // rocksdb::Status s1 = db->Put(rocksdb::WriteOptions(),test_key1,test_value1);
+    // std::string test_key2("key2");
+    // std::string test_value2("value2");
+    // rocksdb::Status s2 = db->Put(rocksdb::WriteOptions(),test_key2,test_value2);
+    // std::string test_key3("key3");
+    // std::string test_value3("value3");
+    // rocksdb::Status s3 = db->Put(rocksdb::WriteOptions(),test_key3,test_value3);
+    // if(s1.ok() && s2.ok() && s3.ok()){
+    //     std::cout<<"Put Key OK \n";
+    //     std::string saved_val1;
+    //     rocksdb::Status s = db->Get(rocksdb::ReadOptions(), test_key1, &saved_val1);
 
-        if(s.ok()){
-            std::cout<<"read ok, value is "<<saved_val1<<" \n";
-        }else{
-            std::cout<<"failed. \n";
-        }
-        std::string saved_val2;
-        rocksdb::Status s4 = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(),test_key1,test_key3);
-        if(s4.ok()){
-            std::cout<<"delete range ok \n";
-            rocksdb::Status s5 = db->Get(rocksdb::ReadOptions(), test_key2, &saved_val2);
-            if(s5.ok()){
-                std::cout<<"read: "<<saved_val2<<" status " <<s.code()<<"\n";
-            }else{
-                std::cout<<"OK, read no value \n ";
-            }
+    //     if(s.ok()){
+    //         std::cout<<"read ok, value is "<<saved_val1<<" \n";
+    //     }else{
+    //         std::cout<<"failed. \n";
+    //     }
+    //     std::string saved_val2;
+    //     rocksdb::Status s4 = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(),test_key1,test_key3);
+    //     if(s4.ok()){
+    //         std::cout<<"delete range ok \n";
+    //         rocksdb::Status s5 = db->Get(rocksdb::ReadOptions(), test_key2, &saved_val2);
+    //         if(s5.ok()){
+    //             std::cout<<"read: "<<saved_val2<<" status " <<s.code()<<"\n";
+    //         }else{
+    //             std::cout<<"OK, read no value \n ";
+    //         }
             
-        }
-    }
-    std::string test_key4("123_9_78");
-    std::string test_key4_prefix("123_9");
-    std::string test_value4("value4");
-    rocksdb::Status s4 = db->Put(rocksdb::WriteOptions(),test_key4,test_value4);
-    if(s4.ok()){
-        std::cout<<"put key4 ok\n";
-    }
-    rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
-    for(it->Seek(test_key4_prefix); it->Valid() && it->key().starts_with(test_key4_prefix); it->Next()){
-        // 打印key
-        std::cout << "Key: " << it->key().ToString() << std::endl;
-        // 打印value
-        std::cout << "Value: " << it->value().ToString() << std::endl;
-    }
-    delete it;
+    //     }
+    // }
+    // std::string test_key4("123_9_78");
+    // std::string test_key4_prefix("123_9");
+    // std::string test_value4("value4");
+    // rocksdb::Status s4 = db->Put(rocksdb::WriteOptions(),test_key4,test_value4);
+    // if(s4.ok()){
+    //     std::cout<<"put key4 ok\n";
+    // }
+    // rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
+    // for(it->Seek(test_key4_prefix); it->Valid() && it->key().starts_with(test_key4_prefix); it->Next()){
+    //     // 打印key
+    //     std::cout << "Key: " << it->key().ToString() << std::endl;
+    //     // 打印value
+    //     std::cout << "Value: " << it->value().ToString() << std::endl;
+    // }
+    // delete it;
     // end of test rocksdb
     insert_duration_micros = std::chrono::microseconds(0);
     search_duration_micros = std::chrono::microseconds(0);
@@ -99,6 +108,7 @@ void init_applier_module(void) {
     db_write_cnt = 0;
     db_fg_read_cnt = 0;
     db_bg_read_cnt = 0;
+    // PTHREAD_MUTEX_init(&db_mutex, NULL);
 
     PTHREAD_MUTEX_init(&log_group_mutex, NULL);
     PTHREAD_COND_init(&log_parse_condition, NULL);
@@ -435,9 +445,10 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
         std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
                                  std::to_string(page_address.PageId()) + "_";
+        auto db_start_time = std::chrono::steady_clock::now();
+        // pthread_mutex_lock(&db_mutex);
         rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
         rocksdb::WriteOptions write_options;
-        auto db_start_time = std::chrono::steady_clock::now();
         // scan + delete
         size_t cnt_tmp = 0;
         for(it->Seek(key_prefix); it->Valid() && it->key().starts_with(key_prefix); it->Next()){
@@ -461,6 +472,7 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         if (!del_status.ok()) {
             std::cerr << "Error deleting range: " << del_status.ToString() << std::endl;
         }
+        // pthread_mutex_unlock(&db_mutex);
         auto db_end_time = std::chrono::steady_clock::now();
         auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
         db_fg_read_duration_micros += db_duration_micros;
@@ -483,7 +495,6 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         //                          std::to_string(page_address.PageId()) + "_";
 
         // latency test
-        
         if(DataPageGroup::Get().Exist(space_id)){
             
             std::vector<lsn_t> memory_lsn_vector;
@@ -503,26 +514,26 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             }
             std::sort(rcdb_lsn_vector.begin(), rcdb_lsn_vector.end());
 
-            if(memory_lsn_vector.size() != rcdb_lsn_vector.size()){
-                LogEvent(COMPONENT_FSAL, "## on demand apply for [%d,%d], size differ, memory_list.size() = %d, rocksd_list.size=%d",
-                    page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
-            }else{
-                bool same = true;
-                for(int i=0; i<memory_lsn_vector.size(); i++){
-                    if(memory_lsn_vector[i] != rcdb_lsn_vector[i]){
-                        same = false;
-                        break;
-                    }
-                }
-                if(!same){
-                    LogEvent(COMPONENT_FSAL, "## on demand apply for [%d,%d], size same, content differ, memory_list.size() = %d, rocksd_list.size=%d",
-                        page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
-                }
-            }
+            // if(memory_lsn_vector.size() != rcdb_lsn_vector.size()){
+            //     LogEvent(COMPONENT_FSAL, "## on demand apply for [%d,%d], size differ, memory_list.size() = %d, rocksd_list.size=%d",
+            //         page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
+            // }else{
+            //     bool same = true;
+            //     for(int i=0; i<memory_lsn_vector.size(); i++){
+            //         if(memory_lsn_vector[i] != rcdb_lsn_vector[i]){
+            //             same = false;
+            //             break;
+            //         }
+            //     }
+            //     if(!same){
+            //         LogEvent(COMPONENT_FSAL, "## on demand apply for [%d,%d], size same, content differ, memory_list.size() = %d, rocksd_list.size=%d",
+            //             page_address.SpaceId(), page_address.PageId(),memory_lsn_vector.size(), rcdb_lsn_vector.size());
+            //     }
+            // }
             
 
             // latency test
-            if(db_fg_read_cnt % 10 == 0){
+            if(db_fg_read_cnt % 100 == 0){
                 LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d]", space_id, page_id);
                 if(search_cnt>0){
                     LogEvent(COMPONENT_FSAL, "index search IO %ld us, total search %ld us, cnt = %ld, average search %.2f us",
@@ -555,8 +566,6 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             
         }
         
-
-
         // for (const auto &item: log_vector) {
         //     log_apply_do_apply(page_address, item.get());
         // }
