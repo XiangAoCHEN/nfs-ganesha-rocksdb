@@ -134,6 +134,7 @@ static void log_apply_worker_work(int worker_index) {
     log_appliers[worker_index].is_running = true;
 
     //rocksdb
+    //== read amplification = page_num / SST_num
     auto db_start_time = std::chrono::steady_clock::now();
     // pthread_mutex_lock(&db_mutex);
     std::vector<rocksdb::LiveFileMetaData> metadata;
@@ -189,7 +190,7 @@ static void log_apply_worker_work(int worker_index) {
                     continue;
                 }
                 
-                db_bg_read_cnt ++;
+                db_bg_read_log_cnt ++;
                 PageAddress page_address(space_id, page_id);
 
                 if (first_flag) {
@@ -236,6 +237,8 @@ static void log_apply_worker_work(int worker_index) {
             } else {
                 LogEvent(COMPONENT_FSAL, "SST file %s deleted successfully.", max_level_file_path.c_str());
             }
+
+            db_bg_read_request_cnt ++;
         }
     }
     // pthread_mutex_unlock(&db_mutex);
@@ -256,7 +259,8 @@ static void log_apply_worker_work(int worker_index) {
         auto end_time{std::chrono::steady_clock::now()};
         auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
         extract_duration_micros += duration_micros;
-        if (log_entry_list != nullptr) extract_cnt += log_entry_list->size();
+        extract_page_cnt++;
+        if (log_entry_list != nullptr) extract_log_cnt += log_entry_list->size();
 
 
         //rocksdb
@@ -289,7 +293,7 @@ static void log_apply_worker_work(int worker_index) {
         // auto db_end_time = std::chrono::steady_clock::now();
         // auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
         // db_bg_read_duration_micros += db_duration_micros;
-        // db_bg_read_cnt ++;
+        // db_bg_read_request_cnt ++;
         
 
         // if (log_entry_list == nullptr) {
@@ -303,23 +307,45 @@ static void log_apply_worker_work(int worker_index) {
             // memory and rocksdb can be diffrerent, because memory use small batch
             
             LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d]",page_address.SpaceId());
-            if(extract_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index extract IO %ld us, total extract %ld us, cnt = %ld, average extract %.2f us",
-                    duration_micros.count(), extract_duration_micros.count(), extract_cnt, double(extract_duration_micros.count())/extract_cnt);
+            if(extract_page_cnt>0){
+                LogEvent(COMPONENT_FSAL, "index extract page IO %ld us, total extract %ld us, cnt = %ld, average extract %.2f us",
+                    duration_micros.count(), extract_duration_micros.count(), extract_page_cnt, double(extract_duration_micros.count())/extract_page_cnt);
             }
-            if(search_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index search, total search %ld us, cnt = %ld, average search %.2f us",
-                    search_duration_micros.count(), search_cnt, double(search_duration_micros.count())/search_cnt);
+            if(extract_log_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index extract log, total extract %ld us, cnt = %ld, average extract %.2f us",
+                        extract_duration_micros.count(), extract_log_cnt, double(extract_duration_micros.count())/extract_log_cnt);
+                }
+            if(search_page_cnt>0){
+                LogEvent(COMPONENT_FSAL, "index search page, total search %ld us, cnt = %ld, average search %.2f us",
+                    search_duration_micros.count(), search_page_cnt, double(search_duration_micros.count())/search_page_cnt);
             }
-            LogEvent(COMPONENT_FSAL, "index total read %ld us, read cnt = %ld, average read %.2f us",
-                    search_duration_micros.count()+extract_duration_micros.count(), search_cnt+extract_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_cnt+extract_cnt));
-            if(db_bg_read_cnt>0){
-                LogEvent(COMPONENT_FSAL, "db background read IO %ld us, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                    db_duration_micros.count(), db_bg_read_duration_micros.count(), db_bg_read_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_cnt);
+            if(search_log_cnt>0){
+                LogEvent(COMPONENT_FSAL, "index search log, total search %ld us, cnt = %ld, average search %.2f us",
+                    search_duration_micros.count(), search_log_cnt, double(search_duration_micros.count())/search_log_cnt);
             }
-            if(db_fg_read_cnt>0){
-                LogEvent(COMPONENT_FSAL, "db foreground read, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                    db_fg_read_duration_micros.count(), db_fg_read_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_cnt);
+            if(search_page_cnt>0 || extract_page_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index total read page %ld us, read cnt = %ld, average read %.2f us",
+                        search_duration_micros.count()+extract_duration_micros.count(), search_page_cnt+extract_page_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_page_cnt+extract_page_cnt));
+                }
+            if(search_log_cnt>0 || extract_log_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "index total read log %ld us, read cnt = %ld, average read %.2f us",
+                        search_duration_micros.count()+extract_duration_micros.count(), search_log_cnt+extract_log_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_log_cnt+extract_log_cnt));
+                }
+            if(db_bg_read_request_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+                        db_bg_read_duration_micros.count(), db_bg_read_request_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_request_cnt);
+            }
+            if(db_bg_read_log_cnt>0){
+                LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+                    db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
+            }
+            if(db_fg_read_page_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
+                        db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
+                }
+            if(db_fg_read_log_cnt>0){
+                LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
+                    db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
             }
             if(insert_cnt>0){
                 LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",

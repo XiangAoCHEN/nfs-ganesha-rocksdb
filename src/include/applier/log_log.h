@@ -370,10 +370,6 @@ private:
     pthread_mutex_t lock_ {}; // protect index_
     std::list<std::unique_ptr<IndexSegment>> index_ {};
 public:
-    // std::chrono::microseconds search_duration_micros {};
-    // std::chrono::microseconds extract_duration_micros {};
-    // size_t search_cnt {};
-    // size_t extract_cnt {};
 
     lsn_t start_lsn{MAX_LSN};
     lsn_t end_lsn{0};
@@ -388,8 +384,12 @@ extern std::chrono::microseconds insert_duration_micros;
 extern std::chrono::microseconds search_duration_micros;
 extern std::chrono::microseconds extract_duration_micros;
 extern size_t insert_cnt;
-extern size_t search_cnt;
-extern size_t extract_cnt;
+// memory index frontground read, request a page
+extern size_t search_page_cnt;
+extern size_t search_log_cnt;
+// memory index background read, request a page
+extern size_t extract_page_cnt;
+extern size_t extract_log_cnt;
 
 extern rocksdb::DB* db;
 extern rocksdb::Options db_options;
@@ -397,8 +397,12 @@ extern std::chrono::microseconds db_write_duration_micros;
 extern std::chrono::microseconds db_fg_read_duration_micros;
 extern std::chrono::microseconds db_bg_read_duration_micros;
 extern size_t db_write_cnt;
-extern size_t db_fg_read_cnt;
-extern size_t db_bg_read_cnt;
+// rocksdb foreground read, request a page
+extern size_t db_fg_read_page_cnt;
+extern size_t db_fg_read_log_cnt;
+// rocksdb background read, request a SST file
+extern size_t db_bg_read_request_cnt;
+extern size_t db_bg_read_log_cnt;
 // extern pthread_mutex_t db_mutex;
 
 extern pthread_mutex_t log_group_mutex;

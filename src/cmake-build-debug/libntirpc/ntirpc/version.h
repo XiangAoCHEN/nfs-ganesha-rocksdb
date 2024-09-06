@@ -9,7 +9,7 @@
 
 #define NTIRPC_VERSION "4.3"
 #define NTIRPC_VERSION_COMMENT "Full-duplex and bi-directional ONC RPC on TCP."
-#define _GIT_HEAD_COMMIT "d51a99c18d99056ad6eba654958c6dc68ce71598"
-#define _GIT_DESCRIBE "V5-dev.1-12-gd51a99c18"
+#define _GIT_HEAD_COMMIT "5dd178c7de14ba46ab04f987b3121dd62e384d21"
+#define _GIT_DESCRIBE "V5-dev.1-13-g5dd178c7d"
 
 #endif /* VERSION_H */

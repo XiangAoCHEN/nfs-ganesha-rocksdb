@@ -24,8 +24,9 @@ static constexpr const size_t ROCKSDB_MIN_WRITE_BUFFER_NUMBER_TO_MERGE = 1;
 static constexpr const size_t ROCKSDB_MAX_BYTES_FOR_LEVEL_BASE = 512 * 1024 * 1024; // 512MB
 static constexpr const size_t ROCKSDB_TARGET_FILE_SIZE_BASE = 64 * 1024 * 1024;// L1 SST size, 64MB
 static constexpr const size_t ROCKSDB_MAX_BYTES_FOR_LEVEL_MULTIPLIER = 10;
-// 3 level, total size : 512MB + 512MB + 5GB + 50GB = 56GB
-static constexpr const int ROCKSDB_NUM_LEVELS = 4;
+// 3 level, total size : 512MB + 512MB + 5GB = 6GB
+// 4 level, total size : 512MB + 512MB + 5GB + 50GB = 56GB
+static constexpr const int ROCKSDB_NUM_LEVELS = 3;
 
 static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
 static constexpr const char * LOG_PATH_PREFIX = "/home/cxa/nfs_server/data/";

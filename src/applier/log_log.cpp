@@ -22,8 +22,10 @@ std::chrono::microseconds insert_duration_micros;
 std::chrono::microseconds search_duration_micros;
 std::chrono::microseconds extract_duration_micros;
 size_t insert_cnt;
-size_t search_cnt;
-size_t extract_cnt;
+size_t search_page_cnt;
+size_t search_log_cnt;
+size_t extract_page_cnt;
+size_t extract_log_cnt;
 
 rocksdb::DB* db;
 rocksdb::Options db_options;
@@ -31,8 +33,10 @@ std::chrono::microseconds db_write_duration_micros;
 std::chrono::microseconds db_fg_read_duration_micros;
 std::chrono::microseconds db_bg_read_duration_micros;
 size_t db_write_cnt;
-size_t db_fg_read_cnt;
-size_t db_bg_read_cnt;
+size_t db_fg_read_page_cnt;
+size_t db_fg_read_log_cnt;
+size_t db_bg_read_request_cnt;
+size_t db_bg_read_log_cnt;
 // pthread_mutex_t db_mutex;// db frontground and background mutex
 
 pthread_mutex_t log_group_mutex;
