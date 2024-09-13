@@ -104,11 +104,27 @@ extern log_parser_t log_parser;
 
 using apply_task_bucket = std::unordered_map<PageAddress, std::list<LogEntry>>;
 
+struct SSTFileMeta {
+    std::string file_name;
+    std::string file_full_path;
+    uint64_t level;
+    uint64_t file_size;
+    std::string smallest_key;
+    std::string largest_key;
+
+    SSTFileMeta(const std::string& _file_name, const std::string& _file_path, 
+        uint64_t _level,uint64_t _file_size, 
+        const std::string& _smallestkey, const std::string& _largestkey)
+        : file_name(_file_name), file_full_path(_file_path), level(_level),
+        file_size(_file_size), smallest_key(_smallestkey), largest_key(_largestkey) {};
+};
+
 struct log_applier_t {
 public:
     log_applier_t();
     // logs need to be applied
     std::vector<PageAddress> logs {};
+    std::vector<SSTFileMeta> SST_files {};
 
     pthread_t thread_id {0};
 
@@ -401,9 +417,14 @@ extern size_t db_write_cnt;
 extern size_t db_fg_read_page_cnt;
 extern size_t db_fg_read_log_cnt;
 // rocksdb background read, request a SST file
-extern size_t db_bg_read_request_cnt;
+extern size_t db_bg_read_SST_cnt;
+extern size_t db_bg_read_page_cnt;
 extern size_t db_bg_read_log_cnt;
 // extern pthread_mutex_t db_mutex;
+
+extern size_t db_read_amplification_by_page;
+extern size_t db_write_amplification_by_page;
+extern pthread_mutex_t db_bg_apply_metric_mutex;
 
 extern pthread_mutex_t log_group_mutex;
 extern pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser
@@ -422,7 +443,7 @@ struct log_group_t {
 
     std::atomic<size_t> parsed_isn;
     std::atomic<size_t> written_isn;
-    std::atomic<size_t> applied_isn;
+    std::atomic<size_t> applied_isn;// log_group.applied_isn is not used
 
     // 在log group中的偏移量
     size_t checkpoint_offset;

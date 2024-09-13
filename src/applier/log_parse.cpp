@@ -134,12 +134,12 @@ void* log_parse_thread_routine(void*) {
                         std::cerr << "Write failed: " << s1.ToString() << std::endl;
                     }
 
-                    auto index_start_time = std::chrono::steady_clock::now();
-                    apply_index.InsertBack(std::move(log_entry));//==write log
-                    auto index_end_time = std::chrono::steady_clock::now();
-                    auto index_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(index_end_time - index_start_time);
-                    insert_cnt++;
-                    insert_duration_micros += index_duration_micros;
+                    // auto index_start_time = std::chrono::steady_clock::now();
+                    // apply_index.InsertBack(std::move(log_entry));//==write log
+                    // auto index_end_time = std::chrono::steady_clock::now();
+                    // auto index_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(index_end_time - index_start_time);
+                    // insert_cnt++;
+                    // insert_duration_micros += index_duration_micros;
                     
                     assert(type == MLOG_1BYTE
                            || type == MLOG_2BYTES

@@ -25,21 +25,7 @@ static bool log_apply_all_idle() {
     });
 }
 
-// 从index上摘下task请求，并且等待所有log worker变成空闲状态
-static std::vector<PageAddress> log_apply_scheduler_acquire(size_t *total_log_len) {
-//    PTHREAD_MUTEX_lock(&log_apply_task_mutex);
-//    while (apply_task_requests.empty()) {
-//        pthread_cond_wait(&log_apply_condition, &log_apply_task_mutex);
-//    }
-//    auto task = std::move(apply_task_requests.front());
-//    apply_task_requests.erase(apply_task_requests.begin());
-//    PTHREAD_MUTEX_unlock(&log_apply_task_mutex);
 
-    // 自旋等待所有log apply worker变成空闲状态
-    while (!log_apply_all_idle());
-
-    return apply_index.ExtractFrontHint(total_log_len);
-}
 
 static bool log_apply_apply_one_log(Page *page, const LogEntry &log) {
     // LogEvent(COMPONENT_FSAL, "apply [%d,%d], page lsn = %d, log lsn = %d, type = %s", page->GetSpaceId(),page->GetPageId(),page->GetLSN(),log.log_start_lsn_,GetLogString(log.type_));
@@ -147,98 +133,99 @@ static void log_apply_worker_work(int worker_index) {
         LogEvent(COMPONENT_FSAL, "No SST file found");
     }else
     {
-        //select one max-level SST file with smallest range: oldest log
-        std::string max_level_file_path;
-        std::string max_level_file_name;
-        std::string min_key;
-        bool first_file = true;
-        for (const auto& file_meta : metadata) {
-            if (file_meta.level == max_level) {
-                if (first_file || file_meta.smallestkey.compare(min_key) < 0) {
-                    LogEvent(COMPONENT_FSAL, "SST file: %s, smallest key: %s", file_meta.name.c_str(), file_meta.smallestkey.c_str());
-                    min_key = file_meta.smallestkey;
-                    max_level_file_path = file_meta.directory + file_meta.name;
-                    max_level_file_name = file_meta.name;
-                    first_file = false;
-                }
-            }
-        }
-
-        rocksdb::SstFileReader sst_reader(db_options);
-        rocksdb::Status status = sst_reader.Open(max_level_file_path);
-        if (!status.ok()) {
-            LogEvent(COMPONENT_FSAL, "Error opening SST file: %s", status.ToString().c_str());
-        }else{
-            rocksdb::ReadOptions read_options;
-            std::unique_ptr<rocksdb::Iterator> it(sst_reader.NewIterator(read_options));
-
-            PageAddress last_page_address;
-            bool first_flag = true;
-            auto page_logs = std::make_unique<std::list<LogEntry>>();
-            for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                std::stringstream ss(it->key().ToString());
-                std::string token;
-                space_id_t space_id = 0;
-                page_id_t page_id = 0;
-                lsn_t lsn = 0;
-                if (std::getline(ss, token, '_')) space_id = static_cast<uint32_t>(std::stoul(token));
-                if (std::getline(ss, token, '_')) page_id = static_cast<uint32_t>(std::stoul(token));
-                if (std::getline(ss, token, '_')) lsn = static_cast<uint64_t>(std::stoull(token));
-                
-                if(space_id == 0 && page_id == 0 && lsn == 0){
-                    LogEvent(COMPONENT_FSAL, "Iterate SST file, error parsing key: %s", it->key().ToString().c_str());
-                    continue;
-                }
-                
-                db_bg_read_log_cnt ++;
-                PageAddress page_address(space_id, page_id);
-
-                if (first_flag) {
-                    first_flag = false;
-                    last_page_address = page_address;
-                }
-                if(last_page_address == page_address){//append
-                    rocksdb::Slice value_slice = it->value();
-                    const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
-                    size_t size = value_slice.size();
-                    LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
-                    page_logs->push_back(std::move(retrieved_entry));
-                }else{// new page
-                    
-                    if(page_logs->size() > 0){
-                        log_apply_do_apply(last_page_address, page_logs.get());
-                    }
-
-                    last_page_address = page_address;
-                    page_logs->clear();
-                    rocksdb::Slice value_slice = it->value();
-                    const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
-                    size_t size = value_slice.size();
-                    LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
-                    page_logs->push_back(std::move(retrieved_entry));
-                }
-            }
-
-            // Handle the last page logs if any
-            if (!page_logs->empty()) {
-                log_apply_do_apply(last_page_address, page_logs.get());
-                page_logs->clear();
-            }
-
-            if (!it->status().ok()) {
-                LogEvent(COMPONENT_FSAL, "Error during iteration: %s", it->status().ToString().c_str());
-            }
-            it.reset();
-
-            status = db->DeleteFile(max_level_file_name);
-
+        for(const auto& sst_file : log_appliers[worker_index].SST_files){
+            rocksdb::SstFileReader sst_reader(db_options);
+            rocksdb::Status status = sst_reader.Open(sst_file.file_full_path);
             if (!status.ok()) {
-                LogEvent(COMPONENT_FSAL, "Error deleting SST file: %s", status.ToString().c_str());
-            } else {
-                LogEvent(COMPONENT_FSAL, "SST file %s deleted successfully.", max_level_file_path.c_str());
-            }
+                LogEvent(COMPONENT_FSAL, "Error opening SST file: %s", status.ToString().c_str());
+            }else{
+                rocksdb::ReadOptions read_options;
+                std::unique_ptr<rocksdb::Iterator> it(sst_reader.NewIterator(read_options));
 
-            db_bg_read_request_cnt ++;
+                size_t total_apply_len = 0;
+                size_t tmp_db_bg_read_page_cnt = 0;
+                PageAddress last_page_address;
+                bool first_flag = true;
+                auto page_logs = std::make_unique<std::list<LogEntry>>();
+                for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                    std::stringstream ss(it->key().ToString());
+                    std::string token;
+                    space_id_t space_id = 0;
+                    page_id_t page_id = 0;
+                    lsn_t lsn = 0;
+                    if (std::getline(ss, token, '_')) space_id = static_cast<uint32_t>(std::stoul(token));
+                    if (std::getline(ss, token, '_')) page_id = static_cast<uint32_t>(std::stoul(token));
+                    if (std::getline(ss, token, '_')) lsn = static_cast<uint64_t>(std::stoull(token));
+                    
+                    if(space_id == 0 && page_id == 0 && lsn == 0){
+                        LogEvent(COMPONENT_FSAL, "Iterate SST file, error parsing key: %s", it->key().ToString().c_str());
+                        continue;
+                    }
+                    
+                    db_bg_read_log_cnt ++;
+                    PageAddress page_address(space_id, page_id);
+
+                    if (first_flag) {
+                        first_flag = false;
+                        last_page_address = page_address;
+                    }
+                    if(last_page_address == page_address){//append
+                        rocksdb::Slice value_slice = it->value();
+                        const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+                        size_t size = value_slice.size();
+                        LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+                        total_apply_len += retrieved_entry.log_len_;
+                        page_logs->push_back(std::move(retrieved_entry));
+                    }else{// new page
+                        tmp_db_bg_read_page_cnt ++;
+                        
+                        if(page_logs->size() > 0){
+                            log_apply_do_apply(last_page_address, page_logs.get());
+                        }
+
+                        last_page_address = page_address;
+                        page_logs->clear();
+                        rocksdb::Slice value_slice = it->value();
+                        const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
+                        size_t size = value_slice.size();
+                        LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
+                        total_apply_len += retrieved_entry.log_len_;
+                        page_logs->push_back(std::move(retrieved_entry));
+                    }
+                }
+
+                // Handle the last page logs if any
+                if (!page_logs->empty()) {
+                    log_apply_do_apply(last_page_address, page_logs.get());
+                    page_logs->clear();
+                }
+
+                if (!it->status().ok()) {
+                    LogEvent(COMPONENT_FSAL, "Error during iteration: %s", it->status().ToString().c_str());
+                }
+                it.reset();
+
+                status = db->DeleteFile(sst_file.file_name);
+
+                if (!status.ok()) {//== todo: the selected SST must be in current max level?
+                    LogEvent(COMPONENT_FSAL, "Error deleting SST file: %s", status.ToString().c_str());
+                } else {
+                    LogEvent(COMPONENT_FSAL, "deleted SST file %s successfully, level %d", sst_file.file_name.c_str(), sst_file.level);
+                }
+
+                PTHREAD_MUTEX_lock(&(db_bg_apply_metric_mutex));
+                db_bg_read_page_cnt += tmp_db_bg_read_page_cnt;
+                db_bg_read_SST_cnt ++;
+                db_read_amplification_by_page = db_bg_read_page_cnt / db_bg_read_SST_cnt;//== read amplification = page_num / SST_num
+                PTHREAD_MUTEX_unlock(&(db_bg_apply_metric_mutex));
+
+                PTHREAD_MUTEX_lock(&(log_group_mutex));
+                // log_group.applied_isn += total_apply_len;// log_group.applied_isn is not used
+                log_group.written_capacity += total_apply_len;
+                // 唤醒log writer
+                pthread_cond_signal(&log_write_condition);
+                PTHREAD_MUTEX_unlock(&(log_group_mutex));
+            }
         }
     }
     // pthread_mutex_unlock(&db_mutex);
@@ -247,129 +234,33 @@ static void log_apply_worker_work(int worker_index) {
     db_bg_read_duration_micros += db_duration_micros;
     
     
-    // do apply
-    size_t page_cnt = 0;
-    for (const auto &page_address: log_appliers[worker_index].logs) {
-        page_cnt++;
-        if(page_cnt == 288){
-            LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d]",page_address.SpaceId(), page_address.PageId());
+    if(db_bg_read_SST_cnt>0){
+        LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+            db_bg_read_duration_micros.count(), db_bg_read_SST_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_SST_cnt);
+    }
+    if(db_bg_read_log_cnt>0){
+        LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+            db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
+    }
+    if(db_fg_read_page_cnt>0){
+            LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
+                db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
         }
-        auto start_time{std::chrono::steady_clock::now()};
-        auto log_entry_list = apply_index.ExtractFront(page_address);//== background apply, read logs of one page
-        auto end_time{std::chrono::steady_clock::now()};
-        auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        extract_duration_micros += duration_micros;
-        extract_page_cnt++;
-        if (log_entry_list != nullptr) extract_log_cnt += log_entry_list->size();
-
-
-        //rocksdb
-        // auto rcdb_log_list = std::make_unique<std::list<LogEntry>>();
-        // std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
-        //                          std::to_string(page_address.PageId()) + "_";
-        // rocksdb::Iterator* it = db->NewIterator(rocksdb::ReadOptions());
-        // rocksdb::WriteOptions write_options;
-        // auto db_start_time = std::chrono::steady_clock::now();
-        // for(it->Seek(key_prefix); it->Valid() && it->key().starts_with(key_prefix); it->Next()){
-        //     rocksdb::Slice value_slice = it->value();
-        //     const byte* bytes = reinterpret_cast<const byte*>(value_slice.data());
-        //     size_t size = value_slice.size();
-        //     LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
-        //     rcdb_log_list->push_back(std::move(retrieved_entry));
-
-        //     // Delete the key after reading the value
-        //     rocksdb::Status del_status = db->Delete(write_options, it->key());
-        //     if (!del_status.ok()) {
-        //         std::cout << "Error deleting key: " << it->key().ToString() << "\n";
-        //     }
-        // }
-        // // bug
-        // // std::string start_key = key_prefix;
-        // // std::string end_key = key_prefix + "\xFF";
-        // // rocksdb::Status del_status = db->DeleteRange(rocksdb::WriteOptions(), db->DefaultColumnFamily(), start_key, end_key);
-        // // if (!del_status.ok()) {
-        // //     std::cerr << "Error deleting range: " << del_status.ToString() << std::endl;
-        // // }
-        // auto db_end_time = std::chrono::steady_clock::now();
-        // auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
-        // db_bg_read_duration_micros += db_duration_micros;
-        // db_bg_read_request_cnt ++;
-        
-
-        // if (log_entry_list == nullptr) {
-        //     // 这条log可能已经被其它的data page reader线程抽走了
-        //     continue;
-        // }
-
-        // latency test
-        
-        if(DataPageGroup::Get().Exist(page_address.SpaceId())){
-            // memory and rocksdb can be diffrerent, because memory use small batch
-            
-            LogEvent(COMPONENT_FSAL, "## background apply for [%d,%d]",page_address.SpaceId());
-            if(extract_page_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index extract page IO %ld us, total extract %ld us, cnt = %ld, average extract %.2f us",
-                    duration_micros.count(), extract_duration_micros.count(), extract_page_cnt, double(extract_duration_micros.count())/extract_page_cnt);
-            }
-            if(extract_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index extract log, total extract %ld us, cnt = %ld, average extract %.2f us",
-                        extract_duration_micros.count(), extract_log_cnt, double(extract_duration_micros.count())/extract_log_cnt);
-                }
-            if(search_page_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index search page, total search %ld us, cnt = %ld, average search %.2f us",
-                    search_duration_micros.count(), search_page_cnt, double(search_duration_micros.count())/search_page_cnt);
-            }
-            if(search_log_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index search log, total search %ld us, cnt = %ld, average search %.2f us",
-                    search_duration_micros.count(), search_log_cnt, double(search_duration_micros.count())/search_log_cnt);
-            }
-            if(search_page_cnt>0 || extract_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index total read page %ld us, read cnt = %ld, average read %.2f us",
-                        search_duration_micros.count()+extract_duration_micros.count(), search_page_cnt+extract_page_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_page_cnt+extract_page_cnt));
-                }
-            if(search_log_cnt>0 || extract_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index total read log %ld us, read cnt = %ld, average read %.2f us",
-                        search_duration_micros.count()+extract_duration_micros.count(), search_log_cnt+extract_log_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_log_cnt+extract_log_cnt));
-                }
-            if(db_bg_read_request_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                        db_bg_read_duration_micros.count(), db_bg_read_request_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_request_cnt);
-            }
-            if(db_bg_read_log_cnt>0){
-                LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                    db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
-            }
-            if(db_fg_read_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                        db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
-                }
-            if(db_fg_read_log_cnt>0){
-                LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                    db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
-            }
-            if(insert_cnt>0){
-                LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",
-                    insert_duration_micros.count(), insert_cnt, double(insert_duration_micros.count())/insert_cnt);
-            }
-            if(db_write_cnt>0){
-                LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
-                    db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
-            }
-
-            // apply_index.print_stats();
-        }
-        
-        // log_apply_do_apply(page_address, log_entry_list.get());
-        // if(rcdb_log_list->size() > 0){
-        //     log_apply_do_apply(page_address, rcdb_log_list.get());
-        // }
+    if(db_fg_read_log_cnt>0){
+        LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
+            db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
+    }
+    if(db_write_cnt>0){
+        LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
+            db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
     }
 
 
     // 放掉lock
-    log_appliers[worker_index].logs.clear();
+    // log_appliers[worker_index].logs.clear();
     log_appliers[worker_index].need_process = false;
     log_appliers[worker_index].is_running = false;
+    log_appliers[worker_index].SST_files.clear();
     PTHREAD_MUTEX_unlock(&(log_appliers[worker_index].mutex));
 }
 
@@ -379,6 +270,119 @@ static void *log_apply_worker_routine(void *worker_index) {
     delete index_ptr;
     for (;;) {
         log_apply_worker_work(index);
+    }
+}
+
+// 从index上摘下task请求，并且等待所有log worker变成空闲状态
+static std::vector<PageAddress> log_apply_scheduler_acquire(size_t *total_log_len) {
+//    PTHREAD_MUTEX_lock(&log_apply_task_mutex);
+//    while (apply_task_requests.empty()) {
+//        pthread_cond_wait(&log_apply_condition, &log_apply_task_mutex);
+//    }
+//    auto task = std::move(apply_task_requests.front());
+//    apply_task_requests.erase(apply_task_requests.begin());
+//    PTHREAD_MUTEX_unlock(&log_apply_task_mutex);
+
+    // 自旋等待所有log apply worker变成空闲状态
+    while (!log_apply_all_idle());
+
+    return apply_index.ExtractFrontHint(total_log_len);
+}
+
+static std::vector<SSTFileMeta> log_apply_scheduler_acquire_SST(size_t *sst_num) {
+    // 自旋等待所有log apply worker变成空闲状态
+    while (!log_apply_all_idle());
+
+    // read SST file
+    std::vector<rocksdb::LiveFileMetaData> metadata;
+    db->GetLiveFilesMetaData(&metadata);
+    int max_level = -1;
+    for (const auto& file_meta : metadata) {
+        max_level = std::max(max_level, file_meta.level);
+    }
+
+    if(max_level == -1){
+        *sst_num = 0;
+        return std::vector<SSTFileMeta>();
+    }
+    
+    std::vector<rocksdb::LiveFileMetaData> max_level_files;
+    for (const auto& file_meta : metadata) {
+        if (file_meta.level == max_level) {
+            max_level_files.push_back(file_meta);
+        }
+    }
+    // 对 max_level 的文件按 smallestkey 进行排序
+    std::sort(max_level_files.begin(), max_level_files.end(), [](const rocksdb::LiveFileMetaData& a, const rocksdb::LiveFileMetaData& b) {
+        return a.smallestkey < b.smallestkey;
+    });
+
+    // bg apply condition: 1. read amplification > threshold 2.max_level is not empty (for first triggering) 
+    if(max_level >= ROCKSDB_FIRST_TRIGGER_LEVEL){
+        if(db_read_amplification_by_page ==0){
+            *sst_num = 1;
+        }else{
+                *sst_num = std::min(db_read_amplification_by_page / READ_AMPLIFICATION_THRESHOLD, 
+                            max_level_files.size());
+        }
+    }
+    
+    std::vector<SSTFileMeta> sst_files;
+    for(int i=0;i<*sst_num;i++){
+        const auto& file_meta = max_level_files[i];
+        LogEvent(COMPONENT_FSAL, "select SST file: %s, level: %d, smallest key: %s", file_meta.name.c_str(), file_meta.level, file_meta.smallestkey.c_str());
+
+        std::string max_level_file_path = file_meta.directory + file_meta.name;
+        std::string max_level_file_name = file_meta.name;
+        std::string min_key = file_meta.smallestkey;
+        std::string max_key = file_meta.largestkey;
+        uint64_t file_size = file_meta.size;
+        uint64_t level = file_meta.level;
+        
+        SSTFileMeta sst_file_meta(max_level_file_name, max_level_file_path, level, file_size, min_key, max_key);
+        sst_files.push_back(sst_file_meta);
+    }
+
+    return sst_files;
+}
+
+static void *log_apply_scheduler_routine_new(void *scheduler_index) {
+    int *index_ptr = static_cast<int *>(scheduler_index);
+    int index = *(index_ptr);
+    delete index_ptr;
+    for (;;) {
+
+        size_t sst_num_to_apply = 0;
+        std::vector<SSTFileMeta> sst_files = log_apply_scheduler_acquire_SST(&sst_num_to_apply);
+
+        if(sst_num_to_apply == 0){
+            sleep(ROCKSDB_MONITOR_INTERVAL);// sleep 20 seconds, then check again 
+            continue;
+        }
+
+        LogEvent(COMPONENT_FSAL, "bg log applier starting apply %zu SST", sst_num_to_apply);
+
+        // 把每一个SST file分配给相应的worker
+        size_t next_applier = 0;
+        for (const auto &item: sst_files) {
+            log_appliers[next_applier].SST_files.push_back(item);
+            // next_applier = (next_applier + 1) % log_appliers.size();//== todo: ensure SST order among workers
+        }
+
+        // 唤醒相应的worker
+        for (auto & log_applier : log_appliers) {
+            PTHREAD_MUTEX_lock(&(log_applier.mutex));
+            log_applier.need_process = true;
+            pthread_cond_signal(&(log_applier.need_process_cond));
+            PTHREAD_MUTEX_unlock(&(log_applier.mutex));
+        }
+
+        // 自己变成worker进行工作
+        LogEvent(COMPONENT_FSAL, "log apply scheduler turn into worker");
+        log_apply_worker_work(index);
+
+        // 自旋等待所有log worker变成空闲状态
+        while (!log_apply_all_idle());
     }
 }
 
@@ -437,7 +441,8 @@ void log_apply_thread_start(int n_thread) {
 
     // 首先启动scheduler
     int *scheduler_index = new int(0);
-    START_THREAD("log apply scheduler 0", &log_appliers[0].thread_id, log_apply_scheduler_routine, (void *)(scheduler_index));
+    // START_THREAD("log apply scheduler 0", &log_appliers[0].thread_id, log_apply_scheduler_routine, (void *)(scheduler_index));
+    START_THREAD("log apply scheduler 0", &log_appliers[0].thread_id, log_apply_scheduler_routine_new, (void *)(scheduler_index));
     n_thread -= 1;
 
     // 启动剩下的apply worker

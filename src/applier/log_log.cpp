@@ -35,9 +35,15 @@ std::chrono::microseconds db_bg_read_duration_micros;
 size_t db_write_cnt;
 size_t db_fg_read_page_cnt;
 size_t db_fg_read_log_cnt;
-size_t db_bg_read_request_cnt;
+size_t db_bg_read_SST_cnt;
+size_t db_bg_read_page_cnt;
 size_t db_bg_read_log_cnt;
 // pthread_mutex_t db_mutex;// db frontground and background mutex
+
+size_t db_read_amplification_by_page;
+size_t db_write_amplification_by_page;
+pthread_mutex_t db_bg_apply_metric_mutex;
+
 
 pthread_mutex_t log_group_mutex;
 pthread_cond_t log_parse_condition; // 每次log writer 写入，导致产生足够多的log，就会产生这个条件变量来唤醒log parser

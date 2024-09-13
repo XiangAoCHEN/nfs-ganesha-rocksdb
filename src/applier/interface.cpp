@@ -42,7 +42,7 @@ void init_applier_module(void) {
     db_options.db_write_buffer_size = ROCKSDB_DB_WRITE_BUFFER_SIZE;
     // block cache
     rocksdb::BlockBasedTableOptions table_options;
-    table_options.block_cache = rocksdb::NewLRUCache(ROCKSDB_BLOCK_CACHE_SIZE);
+    table_options.block_cache = rocksdb::NewLRUCache(ROCKSDB_BLOCK_CACHE_CAPACITY);
     db_options.table_factory.reset(rocksdb::NewBlockBasedTableFactory(table_options));
 
     rocksdb::Status status = rocksdb::DB::Open(db_options,ROCKSDB_DATA_PATH,&db);
@@ -110,9 +110,14 @@ void init_applier_module(void) {
     db_write_cnt = 0;
     db_fg_read_page_cnt = 0;
     db_bg_read_log_cnt = 0;
-    db_bg_read_request_cnt = 0;
+    db_bg_read_SST_cnt = 0;
+    db_bg_read_page_cnt = 0;
     db_bg_read_log_cnt = 0;
     // PTHREAD_MUTEX_init(&db_mutex, NULL);
+
+    db_read_amplification_by_page = 0;
+    db_write_amplification_by_page =0;
+    PTHREAD_MUTEX_init(&db_bg_apply_metric_mutex, NULL);
 
     PTHREAD_MUTEX_init(&log_group_mutex, NULL);
     PTHREAD_COND_init(&log_parse_condition, NULL);
@@ -437,15 +442,15 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
 
 //     主动提取相关的log进行apply
 //        LogEvent(COMPONENT_FSAL, "data page reader start applying space id = %d, page_id = %u", space_id, page_id);
-        auto start_time{std::chrono::steady_clock::now()};
-        auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
-        auto end_time{std::chrono::steady_clock::now()};
-        auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-        search_duration_micros += duration_micros;
-        search_page_cnt ++;
-        for (const auto &item: log_vector) {
-            search_log_cnt += item->size();
-        }
+        // auto start_time{std::chrono::steady_clock::now()};
+        // auto log_vector = apply_index.Search(page_address);//== on demand apply, read log
+        // auto end_time{std::chrono::steady_clock::now()};
+        // auto duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+        // search_duration_micros += duration_micros;
+        // search_page_cnt ++;
+        // for (const auto &item: log_vector) {
+        //     search_log_cnt += item->size();
+        // }
 
 
         // rocksdb prefix seek
@@ -466,12 +471,6 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             size_t size = value_slice.size();
             LogEntry retrieved_entry = LogEntry::deserialize(bytes, size);
             rcdb_log_list->push_back(std::move(retrieved_entry));
-
-            // Delete the key after reading the value
-            // rocksdb::Status del_status = db->Delete(write_options, it->key());
-            // if (!del_status.ok()) {
-            //     std::cout << "Error deleting key: " << it->key().ToString() << "\n";
-            // }
             cnt_tmp++;
         }
         std::string start_key = key_prefix;
@@ -487,34 +486,18 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
         db_fg_read_page_cnt ++;
         db_fg_read_log_cnt += rcdb_log_list->size();
 
-
-        // rocksdb multiget
-        // std::vector<lsn_t> memory_lsn_vector;
-        // for (const auto &item: log_vector) {
-        //     std::list<LogEntry> *log_entry_list = item.get();
-        //     for (const auto &log: (*log_entry_list)) {
-        //         lsn_t log_lsn = log.log_start_lsn_;
-        //         memory_lsn_vector.push_back(log_lsn);
-        //     }
-        // }
-        // std::sort(memory_lsn_vector.begin(), memory_lsn_vector.end());
-
-        // auto multiget_res = std::make_unique<std::list<LogEntry>>();
-        // std::string key_prefix = std::to_string(page_address.SpaceId()) + "_" +
-        //                          std::to_string(page_address.PageId()) + "_";
-
         // latency test
         if(DataPageGroup::Get().Exist(space_id)){
             
-            std::vector<lsn_t> memory_lsn_vector;
-            for (const auto &item: log_vector) {
-                std::list<LogEntry> *log_entry_list = item.get();
-                for (const auto &log: (*log_entry_list)) {
-                    lsn_t log_lsn = log.log_start_lsn_;
-                    memory_lsn_vector.push_back(log_lsn);
-                }
-            }
-            std::sort(memory_lsn_vector.begin(), memory_lsn_vector.end());
+            // std::vector<lsn_t> memory_lsn_vector;
+            // for (const auto &item: log_vector) {
+            //     std::list<LogEntry> *log_entry_list = item.get();
+            //     for (const auto &log: (*log_entry_list)) {
+            //         lsn_t log_lsn = log.log_start_lsn_;
+            //         memory_lsn_vector.push_back(log_lsn);
+            //     }
+            // }
+            // std::sort(memory_lsn_vector.begin(), memory_lsn_vector.end());
 
             std::vector<lsn_t> rcdb_lsn_vector;
             for (const auto &log: (*rcdb_log_list)) {
@@ -544,30 +527,30 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             // latency test
             if(db_fg_read_page_cnt % 100 == 0){
                 LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d]", space_id, page_id);
-                if(search_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index search page, total search %ld us, cnt = %ld, average search %.2f us",
-                        search_duration_micros.count(), search_page_cnt, double(search_duration_micros.count())/search_page_cnt);
-                }
-                if(search_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index search log, total search %ld us, cnt = %ld, average search %.2f us",
-                        search_duration_micros.count(), search_log_cnt, double(search_duration_micros.count())/search_log_cnt);
-                }
-                if(extract_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index extract page, total extract %ld us, cnt = %ld, average extract %.2f us",
-                        extract_duration_micros.count(), extract_page_cnt, double(extract_duration_micros.count())/extract_page_cnt);
-                }
-                if(extract_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index extract log, total extract %ld us, cnt = %ld, average extract %.2f us",
-                        extract_duration_micros.count(), extract_log_cnt, double(extract_duration_micros.count())/extract_log_cnt);
-                }
-                if(search_page_cnt>0 || extract_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index total read page %ld us, read cnt = %ld, average read %.2f us",
-                        search_duration_micros.count()+extract_duration_micros.count(), search_page_cnt+extract_page_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_page_cnt+extract_page_cnt));
-                }
-                if(search_log_cnt>0 || extract_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index total read log %ld us, read cnt = %ld, average read %.2f us",
-                        search_duration_micros.count()+extract_duration_micros.count(), search_log_cnt+extract_log_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_log_cnt+extract_log_cnt));
-                }
+                // if(search_page_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index search page, total search %ld us, cnt = %ld, average search %.2f us",
+                //         search_duration_micros.count(), search_page_cnt, double(search_duration_micros.count())/search_page_cnt);
+                // }
+                // if(search_log_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index search log, total search %ld us, cnt = %ld, average search %.2f us",
+                //         search_duration_micros.count(), search_log_cnt, double(search_duration_micros.count())/search_log_cnt);
+                // }
+                // if(extract_page_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index extract page, total extract %ld us, cnt = %ld, average extract %.2f us",
+                //         extract_duration_micros.count(), extract_page_cnt, double(extract_duration_micros.count())/extract_page_cnt);
+                // }
+                // if(extract_log_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index extract log, total extract %ld us, cnt = %ld, average extract %.2f us",
+                //         extract_duration_micros.count(), extract_log_cnt, double(extract_duration_micros.count())/extract_log_cnt);
+                // }
+                // if(search_page_cnt>0 || extract_page_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index total read page %ld us, read cnt = %ld, average read %.2f us",
+                //         search_duration_micros.count()+extract_duration_micros.count(), search_page_cnt+extract_page_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_page_cnt+extract_page_cnt));
+                // }
+                // if(search_log_cnt>0 || extract_log_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index total read log %ld us, read cnt = %ld, average read %.2f us",
+                //         search_duration_micros.count()+extract_duration_micros.count(), search_log_cnt+extract_log_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_log_cnt+extract_log_cnt));
+                // }
                 if(db_fg_read_page_cnt>0){
                     LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
                         db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
@@ -576,18 +559,18 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
                     LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
                         db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
                 }
-                if(db_bg_read_request_cnt>0){
+                if(db_bg_read_SST_cnt>0){
                     LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                        db_bg_read_duration_micros.count(), db_bg_read_request_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_request_cnt);
+                        db_bg_read_duration_micros.count(), db_bg_read_SST_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_SST_cnt);
                 }
                 if(db_bg_read_log_cnt>0){
                     LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
                         db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
                 }
-                if(insert_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",
-                        insert_duration_micros.count(), insert_cnt, double(insert_duration_micros.count())/insert_cnt);
-                }
+                // if(insert_cnt>0){
+                //     LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",
+                //         insert_duration_micros.count(), insert_cnt, double(insert_duration_micros.count())/insert_cnt);
+                // }
                 if(db_write_cnt>0){
                     LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
                         db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
