@@ -559,14 +559,6 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
                     LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
                         db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
                 }
-                if(db_bg_read_SST_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                        db_bg_read_duration_micros.count(), db_bg_read_SST_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_SST_cnt);
-                }
-                if(db_bg_read_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
-                        db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
-                }
                 // if(insert_cnt>0){
                 //     LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",
                 //         insert_duration_micros.count(), insert_cnt, double(insert_duration_micros.count())/insert_cnt);
@@ -575,7 +567,20 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
                     LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
                         db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
                 }
-
+                if(db_bg_read_SST_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+                        db_bg_read_duration_micros.count(), db_bg_read_SST_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_SST_cnt);
+                }
+                if(db_bg_read_log_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db background read log, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+                        db_bg_read_duration_micros.count(), db_bg_read_log_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_log_cnt);
+                }
+                if(db_bg_read_page_cnt>0){
+                    LogEvent(COMPONENT_FSAL, "db background read page, total bg read %ld us, cnt = %ld, average bg read %.2f us",
+                        db_duration_micros.count(), db_bg_read_duration_micros.count(), db_bg_read_page_cnt, double(db_bg_read_duration_micros.count())/db_bg_read_page_cnt);
+                    LogEvent(COMPONENT_FSAL, "db background read amplification = page_cnt / SST_cnt = %d",
+                        db_read_amplification_by_page);
+                }
             }
             
         }
