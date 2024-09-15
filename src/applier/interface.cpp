@@ -527,45 +527,17 @@ void wait_until_apply_done(int space_id, uint64_t offset, size_t io_amount) {
             // latency test
             if(db_fg_read_page_cnt % 100 == 0){
                 LogEvent(COMPONENT_FSAL, "## on demand apply log for [%d,%d]", space_id, page_id);
-                // if(search_page_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index search page, total search %ld us, cnt = %ld, average search %.2f us",
-                //         search_duration_micros.count(), search_page_cnt, double(search_duration_micros.count())/search_page_cnt);
-                // }
-                // if(search_log_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index search log, total search %ld us, cnt = %ld, average search %.2f us",
-                //         search_duration_micros.count(), search_log_cnt, double(search_duration_micros.count())/search_log_cnt);
-                // }
-                // if(extract_page_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index extract page, total extract %ld us, cnt = %ld, average extract %.2f us",
-                //         extract_duration_micros.count(), extract_page_cnt, double(extract_duration_micros.count())/extract_page_cnt);
-                // }
-                // if(extract_log_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index extract log, total extract %ld us, cnt = %ld, average extract %.2f us",
-                //         extract_duration_micros.count(), extract_log_cnt, double(extract_duration_micros.count())/extract_log_cnt);
-                // }
-                // if(search_page_cnt>0 || extract_page_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index total read page %ld us, read cnt = %ld, average read %.2f us",
-                //         search_duration_micros.count()+extract_duration_micros.count(), search_page_cnt+extract_page_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_page_cnt+extract_page_cnt));
-                // }
-                // if(search_log_cnt>0 || extract_log_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index total read log %ld us, read cnt = %ld, average read %.2f us",
-                //         search_duration_micros.count()+extract_duration_micros.count(), search_log_cnt+extract_log_cnt, double(search_duration_micros.count()+extract_duration_micros.count())/(search_log_cnt+extract_log_cnt));
-                // }
                 if(db_fg_read_page_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                        db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
+                    LogEvent(COMPONENT_FSAL, "db foreground read page, cnt = %ld, total fg read %ld us,  average fg read %.2f us",
+                        db_fg_read_page_cnt, db_fg_read_duration_micros.count(), double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
                 }
                 if(db_fg_read_log_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                        db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
+                    LogEvent(COMPONENT_FSAL, "db foreground read log, cnt = %ld, total fg read %ld us, average fg read %.2f us",
+                        db_fg_read_log_cnt, db_fg_read_duration_micros.count(), double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
                 }
-                // if(insert_cnt>0){
-                //     LogEvent(COMPONENT_FSAL, "index insert, total %ld us, cnt=%ld, average %.2f us",
-                //         insert_duration_micros.count(), insert_cnt, double(insert_duration_micros.count())/insert_cnt);
-                // }
                 if(db_write_cnt>0){
-                    LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
-                        db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
+                    LogEvent(COMPONENT_FSAL, "rocksdb insert IO, cnt =%ld, total %ld us, average %.2f us",
+                        db_write_cnt, db_write_duration_micros.count(), double(db_write_duration_micros.count())/db_write_cnt);
                 }
                 if(db_bg_read_SST_cnt>0){
                     LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",

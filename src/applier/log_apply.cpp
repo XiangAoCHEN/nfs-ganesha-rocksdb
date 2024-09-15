@@ -235,16 +235,16 @@ static void log_apply_worker_work(int worker_index) {
     
     
     if(db_fg_read_page_cnt>0){
-            LogEvent(COMPONENT_FSAL, "db foreground read page IO %ld us, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-                db_duration_micros.count(), db_fg_read_duration_micros.count(), db_fg_read_page_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
+            LogEvent(COMPONENT_FSAL, "db foreground read page, cnt = %ld, total fg read %ld us,  average fg read %.2f us",
+                db_fg_read_page_cnt, db_fg_read_duration_micros.count(), double(db_fg_read_duration_micros.count())/db_fg_read_page_cnt);
         }
     if(db_fg_read_log_cnt>0){
-        LogEvent(COMPONENT_FSAL, "db foreground read log, total fg read %ld us, cnt = %ld, average fg read %.2f us",
-            db_fg_read_duration_micros.count(), db_fg_read_log_cnt, double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
+        LogEvent(COMPONENT_FSAL, "db foreground read log, cnt = %ld, total fg read %ld us, average fg read %.2f us",
+            db_fg_read_log_cnt, db_fg_read_duration_micros.count(), double(db_fg_read_duration_micros.count())/db_fg_read_log_cnt);
     }
     if(db_write_cnt>0){
-        LogEvent(COMPONENT_FSAL, "rocksdb insert IO, total %ld us, cnt =%ld, average %.2f us",
-            db_write_duration_micros.count(), db_write_cnt, double(db_write_duration_micros.count())/db_write_cnt);
+        LogEvent(COMPONENT_FSAL, "rocksdb insert IO, cnt =%ld, total %ld us, average %.2f us",
+            db_write_cnt, db_write_duration_micros.count(), double(db_write_duration_micros.count())/db_write_cnt);
     }
     if(db_bg_read_SST_cnt>0){
         LogEvent(COMPONENT_FSAL, "db background read SST, total bg read %ld us, cnt = %ld, average bg read %.2f us",
