@@ -28,7 +28,8 @@ static constexpr const size_t ROCKSDB_MAX_BYTES_FOR_LEVEL_MULTIPLIER = 10;
 // 4 level, total size : 512MB + 512MB + 5GB + 50GB = 56GB
 static constexpr const int ROCKSDB_NUM_LEVELS = 3;
 
-static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
+// static constexpr const size_t APPLY_BATCH_SIZE = 8 * 1024 * 1024; // 8M
+static constexpr const size_t APPLY_BATCH_SIZE = 1 * 1 * 1024; // 1k
 static constexpr const char * LOG_PATH_PREFIX = "/home/cxa/nfs_server/data/";
 static constexpr const char * SYS_TABLE_FILE = "/home/cxa/nfs_server/data/ibdata1";
 static constexpr const char * LOG_FILES_BASE_NAME = "ib_logfile";
