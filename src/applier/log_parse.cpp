@@ -122,17 +122,17 @@ void* log_parse_thread_routine(void*) {
                     && type != MLOG_INDEX_LOAD) {
                     // rocksdb: key = pageAddress, value = logEntry
                     // printf("## write log records, space_id=%d, page_id=%d, lsn=%d\n",space_id,page_id,log_parser.parsed_lsn);
-                    std::string key = std::to_string(space_id) + "_" + std::to_string(page_id) + "_" + std::to_string(log_parser.parsed_lsn);
-                    std::vector<byte> serialized = log_entry.serialize();
-                    auto db_start_time = std::chrono::steady_clock::now();
-                    rocksdb::Status s1 = db->Put(rocksdb::WriteOptions(),key,rocksdb::Slice(reinterpret_cast<char*>(serialized.data()), serialized.size()));
-                    auto db_end_time = std::chrono::steady_clock::now();
-                    auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
-                    db_write_cnt ++;
-                    db_write_duration_micros += db_duration_micros;
-                    if (!s1.ok()) {
-                        std::cerr << "Write failed: " << s1.ToString() << std::endl;
-                    }
+                    // std::string key = std::to_string(space_id) + "_" + std::to_string(page_id) + "_" + std::to_string(log_parser.parsed_lsn);
+                    // std::vector<byte> serialized = log_entry.serialize();
+                    // auto db_start_time = std::chrono::steady_clock::now();
+                    // rocksdb::Status s1 = db->Put(rocksdb::WriteOptions(),key,rocksdb::Slice(reinterpret_cast<char*>(serialized.data()), serialized.size()));
+                    // auto db_end_time = std::chrono::steady_clock::now();
+                    // auto db_duration_micros = std::chrono::duration_cast<std::chrono::microseconds>(db_end_time - db_start_time);
+                    // db_write_cnt ++;
+                    // db_write_duration_micros += db_duration_micros;
+                    // if (!s1.ok()) {
+                    //     std::cerr << "Write failed: " << s1.ToString() << std::endl;
+                    // }
 
                     auto index_start_time = std::chrono::steady_clock::now();
                     apply_index.InsertBack(std::move(log_entry));//==write log
